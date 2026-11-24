@@ -1,0 +1,103 @@
+/* A5 — Compléments aux maquettes D2 (maquettes.css, copié tel quel) pour les états réels de l'API :
+   attente du LLM local, erreurs, ressources, image de slide, page sans cours, notation SM-2 sur 6 niveaux.
+   Uniquement des jetons de la charte D1 (variables --mat-* et teintes dérivées de maquettes.css). */
+
+/* ---------- Slide : contenu réel, de longueur variable ---------- */
+.slide { overflow-y: auto; animation: fondu-slide 180ms ease; }
+@keyframes fondu-slide { from { opacity: 0.35; } }
+.slide p { margin: 0 0 8px; }
+.slide .figure-slide { color: var(--gris); font-size: clamp(13px, 1vw, 15px); margin-block-start: 10px; }
+.slide .formule-slide .katex { font-size: 1.05em; }
+.katex-bloc { display: block; overflow-x: auto; overflow-y: hidden; padding-block: 4px; }
+.formule .katex { font-size: 1em; }
+
+/* Formules : toujours de gauche à droite, même en arabe (sinon KaTeX est inversé en RTL) */
+.katex, .katex-bloc, .formule { direction: ltr; unicode-bidi: isolate; }
+[dir="rtl"] .formule svg { transform: scaleX(-1); }
+
+/* ---------- Attente du LLM local (30 à 120 s) ---------- */
+.attente {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 12px 16px; border-radius: var(--rayon-sm);
+  background: var(--bleu-ciel); color: var(--marine-2); font-size: 15px;
+}
+.attente small { display: block; color: var(--gris); font-size: 13.5px; }
+.attente-temps { font-family: var(--titre); color: var(--marine); }
+.attente-points { display: inline-flex; gap: 5px; }
+.attente-points i { width: 8px; height: 8px; border-radius: 50%; background: var(--bleu); animation: pulse 900ms var(--ease-in-out) infinite; }
+.attente-points i:nth-child(2) { animation-delay: 150ms; }
+.attente-points i:nth-child(3) { animation-delay: 300ms; }
+.attente-annuler { margin-inline-start: auto; min-height: 32px; }
+.tour .bulle .attente { padding: 0; background: transparent; }
+
+/* ---------- Erreurs ---------- */
+.erreur {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 12px 16px; border-radius: var(--rayon-sm);
+  background: var(--surface); border: 2px dashed var(--filet-fort); color: var(--marine-2);
+}
+.bandeau-erreur {
+  position: fixed; z-index: 30; inset-inline: 16px; bottom: 16px; margin-inline: auto; max-width: 720px;
+  display: flex; align-items: center; gap: 8px; background: var(--surface); border-radius: var(--rayon-sm); box-shadow: var(--ombre-forte);
+}
+.bandeau-erreur .erreur { flex: 1; }
+.note-ok { margin: 0; color: var(--vert); font-weight: 700; font-size: 14.5px; }
+
+/* ---------- Slide : rendu PNG de l'ingestion (Slide.image_rendu), sinon le texte ci-dessus ---------- */
+.slide.slide-image { padding: 0; display: grid; place-items: center; background: var(--surface); }
+.slide.slide-image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+@media (max-width: 980px) { .slide.slide-image { aspect-ratio: 16 / 9; } }
+
+/* ---------- Explication ---------- */
+.bloc ul { margin: 4px 0 0; padding-inline-start: 22px; color: var(--marine-2); }
+.bloc p + p { margin-block-start: 8px; }
+.explication .curseur-ecriture > :last-child::after,
+.idee.curseur-ecriture::after {
+  content: ""; display: inline-block; width: 8px; height: 1em; margin-inline-start: 2px; vertical-align: -2px;
+  background: var(--bleu); border-radius: 2px; animation: pulse 800ms ease infinite;
+}
+.bloc.curseur-ecriture::after { content: none; }
+
+/* ---------- Ressources (A4) ---------- */
+.ressources { display: flex; flex-direction: column; gap: 10px; }
+.ressources h3 { font-size: 13.5px; color: var(--bleu); }
+.ressources ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ressource { padding: 12px 16px; border-radius: 14px; background: var(--fond); border: 1px solid var(--filet); }
+.ressource-tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ressource-titre { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; text-decoration: none; }
+.ressource-titre:hover { text-decoration: underline; }
+.ressource-titre svg.icone { width: 16px; height: 16px; }
+[dir="rtl"] .ressource-titre svg.icone { transform: scaleX(-1); }
+.type-ressource {
+  padding: 2px 10px; border-radius: 999px; background: var(--bleu-ciel-2); color: var(--marine);
+  font-family: var(--titre); font-weight: 700; font-size: 12.5px;
+}
+.ressource .justification { margin: 6px 0 0; color: var(--marine-2); font-size: 14.5px; }
+.ressource .description { margin: 4px 0 0; color: var(--gris); font-size: 14px; }
+.ressources .vide { margin: 0; color: var(--gris); }
+
+/* ---------- Questions ---------- */
+.paragraphe-bulle { margin: 0; display: inline; }
+.paragraphe-bulle + .paragraphe-bulle::before { content: ""; display: block; height: 8px; }
+.tour.tuteur .mascotte { margin-block-start: 2px; }
+.suggestions button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- Quiz ---------- */
+.lien-discret { border: 0; background: none; padding: 0; color: var(--bleu); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.carte-question h2 .katex, .choix .katex { font-size: 1em; }
+
+/* Notation SM-2 de 0 à 5 : six boutons (deux rangées de trois sur tablette, trois sur téléphone) */
+.evaluation.evaluation-sm2 { grid-template-columns: repeat(6, 1fr); }
+.evaluation-sm2 .bouton { padding-inline: 8px; }
+.evaluation-sm2 .note { font-size: 13px; opacity: 0.75; }
+@media (max-width: 980px) { .evaluation.evaluation-sm2 { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- Cours ou Quiz sans cours ouvert ---------- */
+.sans-cours {
+  max-width: 640px; margin-inline: auto; padding: 48px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;
+}
+.sans-cours .mascotte { width: 76px; height: 76px; }
+.sans-cours h1 { font-size: 27px; }
+.sans-cours p { margin: 0; color: var(--marine-2); max-width: 52ch; }
+.sans-cours .actions { justify-content: center; border: 0; padding: 0; }

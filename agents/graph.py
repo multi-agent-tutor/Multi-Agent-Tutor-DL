@@ -14,7 +14,15 @@ Chaque membre remplace le sien sans toucher au graphe, en passant sa fonction
 
 Un agent est une fonction ``(TutorState) -> dict`` qui renvoie les champs mis à jour
 (``reponse``, ``sources``, ``historique``…), comme tout nœud LangGraph.
-Le Critic (O3) sera inséré entre les agents et ``END``.
+
+Boucle de correction (O3) : avec ``critic=``, les réponses texte (explication, question)
+passent par le Critic avant ``END`` ; s'il renvoie des ``corrections``, la réponse repart vers
+l'agent d'origine (2 fois au plus, ``iterations_critic``) :
+
+    START → router → explainer | qa ⇄ critic → END
+                   → quiz | resources → END
+
+    graphe = construire_graphe({...}, critic=critic_agent)   # agents.critic
 """
 
 from __future__ import annotations
@@ -66,12 +74,16 @@ def classer_intention(question: str) -> Intention:
 
 
 def router(state: TutorState) -> dict[str, Any]:
-    """Nœud Router : garde l'intention imposée par l'API, sinon la déduit de la question."""
+    """Nœud Router : garde l'intention imposée par l'API, sinon la déduit de la question.
+
+    Remet aussi à zéro l'état du Critic (O3), qui ne doit pas passer d'un tour à l'autre.
+    """
+    remise = {"iterations_critic": 0, "corrections": [], "score_fidelite": None}
     if state.intention is not None:
-        return {}
+        return remise
     if not state.question.strip():
-        return {"intention": "expliquer"}
-    return {"intention": classer_intention(state.question)}
+        return {**remise, "intention": "expliquer"}
+    return {**remise, "intention": classer_intention(state.question)}
 
 
 def _aiguiller(state: TutorState) -> str:
@@ -103,8 +115,23 @@ AGENTS_BOUCHONS: dict[Intention, Agent] = {
 }
 
 
-def construire_graphe(agents: Mapping[Intention, Agent] | None = None) -> Any:
-    """Construire et compiler le graphe ; ``agents`` remplace tout ou partie des bouchons."""
+# Intentions dont la réponse texte est vérifiée par le Critic (le quiz a son propre contrôle,
+# les ressources viennent d'un catalogue externe au cours).
+INTENTIONS_CRITIQUEES: tuple[Intention, ...] = ("expliquer", "question")
+
+
+def _apres_critic(state: TutorState) -> str:
+    """Corrections demandées : retour à l'agent d'origine ; sinon fin."""
+    if state.corrections:
+        return NOEUD_PAR_INTENTION[state.intention or "question"]
+    return END
+
+
+def construire_graphe(agents: Mapping[Intention, Agent] | None = None, *, critic: Agent | None = None) -> Any:
+    """Construire et compiler le graphe ; ``agents`` remplace tout ou partie des bouchons.
+
+    ``critic`` (O3) insère la boucle de correction après les agents de ``INTENTIONS_CRITIQUEES``.
+    """
     inconnus = set(agents or {}) - set(NOEUD_PAR_INTENTION)
     if inconnus:
         raise ValueError(f"intentions inconnues : {sorted(inconnus)}")
@@ -112,9 +139,14 @@ def construire_graphe(agents: Mapping[Intention, Agent] | None = None) -> Any:
 
     graphe = StateGraph(TutorState)
     graphe.add_node("router", router)
+    if critic is not None:
+        graphe.add_node("critic", critic)
+        retours = [NOEUD_PAR_INTENTION[i] for i in INTENTIONS_CRITIQUEES]
+        graphe.add_conditional_edges("critic", _apres_critic, [*retours, END])
     for intention, noeud in NOEUD_PAR_INTENTION.items():
         graphe.add_node(noeud, choisis[intention])
-        graphe.add_edge(noeud, END)
+        critique = critic is not None and intention in INTENTIONS_CRITIQUEES
+        graphe.add_edge(noeud, "critic" if critique else END)
     graphe.add_edge(START, "router")
     graphe.add_conditional_edges("router", _aiguiller, list(NOEUD_PAR_INTENTION.values()))
     return graphe.compile()

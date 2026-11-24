@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Cours — Multi-Agent Tutor</title>
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="maquettes.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-depot" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+  <symbol id="i-livre" viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></symbol>
+  <symbol id="i-cours" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-quiz" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-gauche" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-droite" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-etoile" viewBox="0 0 24 24"><path d="M12 3l2.4 5.6 6.1.5-4.6 4 1.4 6-5.3-3.2-5.3 3.2 1.4-6-4.6-4 6.1-.5z"/></symbol>
+  <symbol id="i-bouclier" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-son" viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-monde" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-bulle" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-envoyer" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
+  <symbol id="i-etudiants" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/><path d="M6.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M1.5 18c0-2 1.5-3.5 4-3.5M22.5 18c0-2-1.5-3.5-4-3.5"/></symbol>
+</svg>
+
+<header class="barre">
+  <a class="marque" href="accueil/index.html" aria-label="Multi-Agent Tutor, accueil"><img src="img/logo-icone.png" alt="" width="44" height="44"><span class="marque-nom">Multi-Agent <b>Tutor</b></span></a>
+  <div class="cours-actuel">
+    <svg class="icone"><use href="#i-livre"/></svg>
+    <span>Optimisation pour le ML ·</span>
+    <strong>Ch. 3 — Descente de gradient stochastique</strong>
+  </div>
+  <nav class="onglets" aria-label="Sections">
+    <a href="depot.html"><svg class="icone"><use href="#i-depot"/></svg><span data-t="depot">Déposer</span></a>
+    <a href="cours.html" aria-current="page"><svg class="icone"><use href="#i-cours"/></svg><span data-t="cours">Cours</span></a>
+    <a href="quiz.html"><svg class="icone"><use href="#i-quiz"/></svg><span data-t="quiz">Quiz</span></a>
+  </nav>
+  <div class="langues" role="group" aria-label="Langue">
+    <button data-lang="fr" aria-pressed="true">FR</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+    <button data-lang="ar" aria-pressed="false" aria-label="العربية">AR</button>
+  </div>
+</header>
+
+<main class="page-cours">
+  <!-- Gauche : la slide du cours -->
+  <div class="colonne slide-fixe">
+    <div class="titre-slide">
+      <h1>Descente de gradient stochastique</h1>
+      <span class="meta"><span data-t="slide">Slide</span> <b id="numero">5</b> / 24 · 2 min</span>
+    </div>
+    <div class="cadre-slide" id="cadre">
+      <section class="slide" id="slide" aria-live="polite" aria-label="Slide 5"></section>
+    </div>
+    <div class="navigation">
+      <button class="bouton" id="precedente"><svg class="icone miroir"><use href="#i-gauche"/></svg><span data-t="prec">Précédente</span></button>
+      <div class="position"><b id="numero-nav">5</b> / 24</div>
+      <button class="bouton" id="suivante"><span data-t="suiv">Suivante</span><svg class="icone miroir"><use href="#i-droite"/></svg></button>
+    </div>
+    <div class="bande" id="bande" aria-label="Slides du cours"></div>
+    <div class="legende" aria-hidden="true">
+      <span><i style="width:7px;height:7px;background:var(--bleu-clair)"></i><span data-t="vue">vue</span></span>
+      <span><i style="width:9px;height:9px;background:var(--bleu)"></i><span data-t="comprise">comprise</span></span>
+      <span><i style="width:11px;height:11px;background:var(--vert)"></i><span data-t="testee">testée</span></span>
+    </div>
+  </div>
+
+  <!-- Droite : explication puis questions -->
+  <div class="colonne">
+    <section class="panneau explication" aria-labelledby="titre-explication">
+      <div class="tete-panneau">
+        <span data-mascotte id="mascotte-explication"></span>
+        <div>
+          <h2 id="titre-explication" data-t="expl">Explication</h2>
+          <div class="sous">
+            <span class="agent"><span class="disque"><svg class="icone"><use href="#i-livre"/></svg></span>Explainer</span>
+            <span class="verifie"><svg class="icone"><use href="#i-bouclier"/></svg><span data-t="verifie">Vérifié par le Critic</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="niveaux" role="group" aria-label="Niveau">
+        <span class="curseur" id="curseur"></span>
+        <button data-niveau="debutant" aria-pressed="false" data-t="debutant">Débutant</button>
+        <button data-niveau="intermediaire" aria-pressed="true" data-t="intermediaire">Intermédiaire</button>
+        <button data-niveau="avance" aria-pressed="false" data-t="avance">Avancé</button>
+      </div>
+      <div class="contenu" id="contenu" aria-live="polite"></div>
+      <div class="actions">
+        <a class="bouton principal" href="quiz.html"><svg class="icone"><use href="#i-quiz"/></svg><span data-t="tester">Me tester sur cette slide</span></a>
+        <button class="bouton"><svg class="icone"><use href="#i-son"/></svg><span data-t="ecouter">Écouter</span></button>
+        <button class="bouton discret"><svg class="icone"><use href="#i-monde"/></svg><span data-t="ress">Ressources</span></button>
+      </div>
+    </section>
+
+    <section class="panneau questions" aria-labelledby="titre-questions">
+      <div class="tete-panneau">
+        <span class="disque clair" style="width:40px;height:40px"><svg class="icone"><use href="#i-bulle"/></svg></span>
+        <div>
+          <h2 id="titre-questions" data-t="questions">Questions sur le cours</h2>
+          <div class="sous" data-t="sous-questions">Réponses tirées de ton cours, avec leurs slides.</div>
+        </div>
+      </div>
+      <div class="fil" id="fil" aria-live="polite"></div>
+      <div class="suggestions" id="suggestions">
+        <button>Pourquoi la méthode oscille-t-elle ?</button>
+        <button>C'est quoi une époque ?</button>
+        <button>Et le taux d'apprentissage d'Adam ?</button>
+      </div>
+      <form class="saisie" id="formulaire">
+        <input type="text" id="question" data-ph="ph" placeholder="Pose une question sur ce cours…" aria-label="Ta question" autocomplete="off">
+        <button class="bouton principal" type="submit"><svg class="icone miroir"><use href="#i-envoyer"/></svg><span data-t="envoyer">Envoyer</span></button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<!-- Mobile : l'action principale reste à portée de pouce -->
+<nav class="barre-mobile" aria-label="Actions">
+  <a class="bouton principal" href="quiz.html"><svg class="icone"><use href="#i-quiz"/></svg><span data-t="tester-court">Me tester</span></a>
+  <a class="bouton" href="#formulaire"><svg class="icone"><use href="#i-bulle"/></svg><span data-t="demander">Demander</span></a>
+</nav>
+
+<script src="maquettes.js"></script>
+<script>
+  // ---------- Données de démonstration (cours ml_gradient_stochastique_esprit_fr) ----------
+  const slides = {
+    3: { titre: "Stochastique, mais pourquoi ?", corps: `<p>Pour la régression linéaire sur m données, chaque itération de la descente de gradient demande une <b>somme sur toutes les données</b>.</p><ul><li>Avec des millions de données, ce calcul répété devient très coûteux.</li><li><b>Idée</b> : utiliser à chaque itération une seule donnée, choisie au hasard.</li></ul>` },
+    4: { titre: "Erreur totale et erreurs locales", corps: `<p>On mesure la qualité du modèle F par l'erreur totale, somme des erreurs locales :</p><p class="formule-slide">E = Σ E<sub>i</sub>,  E<sub>i</sub> = (y<sub>i</sub> − F(X<sub>i</sub>))²</p>` },
+    5: { titre: "Un « petit » gradient à la place d'un « gros »", corps: `<p>À chaque itération, on utilise le gradient d'une seule erreur locale <i>E<sub>i</sub></i> au lieu de celui de <i>E</i> :</p><p class="formule-slide">X<sub>k+1</sub> = X<sub>k</sub> − ρ ∇E<sub>i</sub>(X<sub>k</sub>)</p><ul><li><b>Gradient classique</b> : un « gros » gradient (N données), un grand pas.</li><li><b>Gradient stochastique</b> : N « petits » gradients par époque.</li></ul>` },
+    7: { titre: "Pourquoi ça marche ?", corps: `<p>Si l'indice I est tiré uniformément, le gradient stochastique est un <b>estimateur sans biais</b> du gradient :</p><p class="formule-slide">𝔼[∇E<sub>I</sub>(X)] = (1/N) ∇E(X)</p><ul><li>Au minimiseur, ∇E(X*) = 0 mais ∇E<sub>i</sub>(X*) ≠ 0 : à pas constant, la méthode oscille.</li></ul>` },
+    13: { titre: "Descente par lots (mini-batch)", corps: `<ul><li><b>K = 1</b> : descente de gradient stochastique ; <b>K = N</b> : descente classique.</li><li>Moyenner sur K données réduit le bruit ; les K gradients se calculent en parallèle (GPU).</li><li>Valeurs usuelles : K = 32, 64, 128 (batch_size).</li></ul>` },
+    23: { titre: "Pas constant ou pas décroissant", corps: `<p>Pour converger vers X*, on fait tendre le pas vers 0, mais pas trop vite :</p><p class="formule-slide">Σ ρ<sub>k</sub> = +∞,  Σ ρ<sub>k</sub>² < +∞</p>` }
+  };
+  const textes = {
+    debutant: {
+      idee: "Au lieu de regarder toutes les données avant chaque pas, on n'en regarde qu'une seule.",
+      formule: "Xₖ₊₁ = Xₖ − ρ ∇Eᵢ(Xₖ)",
+      explication: "Imagine descendre une colline dans le brouillard : plutôt que d'interroger mille personnes sur la pente, tu en interroges <strong>une seule</strong> à chaque pas. Chaque conseil est moins précis, mais tu avances bien plus vite.",
+      exemple: "Avec un million de photos, la méthode classique les parcourt toutes pour faire un seul pas ; la méthode stochastique fait un million de petits pas dans le même temps.",
+      retenir: "Un petit pas par donnée, beaucoup de pas : plus rapide, mais plus « bruité »."
+    },
+    intermediaire: {
+      idee: "On remplace le gradient de l'erreur totale ∇E par celui d'une seule erreur locale ∇Eᵢ.",
+      formule: "Xₖ₊₁ = Xₖ − ρ ∇Eᵢ(Xₖ)",
+      explication: "L'itération suivante utilise une autre donnée. Une <strong>époque</strong> (un passage sur les N données) donne ainsi <strong>N mises à jour</strong> au lieu d'une seule, pour le même coût de calcul.",
+      exemple: "Pour une régression y ≃ ax + b, chaque pas n'utilise qu'un point (xᵢ, yᵢ) : plus besoin de sommer sur les m données.",
+      retenir: "Gradient classique : un gros pas par époque. Gradient stochastique : N petits pas par époque."
+    },
+    avance: {
+      idee: "Avec I tiré uniformément, ∇E_I est un estimateur sans biais de (1/N) ∇E.",
+      formule: "𝔼[∇E_I(X)] = (1/N) ∇E(X)",
+      explication: "En moyenne, un pas stochastique est un pas de descente classique, à l'échelle 1/N près. La <strong>variance</strong> de l'estimateur rend la trajectoire bruitée : au minimiseur, ∇E(X*) = 0 mais ∇Eᵢ(X*) ≠ 0, d'où l'oscillation à pas constant.",
+      exemple: "Coût par itération O(1) au lieu de O(N) ; converger vers X* demande Σ ρₖ = ∞ et Σ ρₖ² < ∞.",
+      retenir: "Sans biais mais bruité : le pas ρ règle le compromis entre vitesse et précision."
+    }
+  };
+  // Réponses du Q&A (B3) : sourcées, ou refus honnête quand ce n'est pas dans le cours.
+  const reponses = [
+    { mots: ["oscill", "minimum", "minimis"], texte: "Au minimiseur X*, le gradient total est nul, mais pas les gradients locaux ∇Eᵢ(X*) : avec un pas constant, chaque pas déplace encore le point.", sources: [7, 23] },
+    { mots: ["époque", "epoque", "epoch", "itération"], texte: "Une itération est une mise à jour des paramètres ; une époque est un passage complet sur les N données.", sources: [3] },
+    { mots: ["lot", "batch", "mini"], texte: "La descente par lots utilise K données par pas : K = 1 donne la descente stochastique, K = N la descente classique.", sources: [13] },
+    { mots: ["pas", "décroiss", "ρ", "rho", "converg"], texte: "Pour converger, le pas doit tendre vers 0 sans aller trop vite : Σ ρₖ = +∞ et Σ ρₖ² < +∞.", sources: [23] }
+  ];
+
+  const $ = id => document.getElementById(id);
+  dessinerMascottes();
+  const mascotte = $("mascotte-explication");
+
+  // ---------- Explication à trois niveaux ----------
+  const ordre = ["debutant", "intermediaire", "avance"];
+  let niveau = "intermediaire";
+  function placerCurseur() {
+    const i = ordre.indexOf(niveau);
+    const sens = document.documentElement.dir === "rtl" ? -1 : 1;
+    $("curseur").style.transform = `translateX(${i * 100 * sens}%)`;
+    document.querySelectorAll(".niveaux button").forEach(b => b.setAttribute("aria-pressed", b.dataset.niveau === niveau));
+  }
+  function rendreExplication(trace) {
+    const t = textes[niveau];
+    $("contenu").innerHTML =
+      `<p class="idee">${t.idee}</p>` +
+      `<div><span class="formule${trace ? " trace" : ""}">${t.formule}<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M3 6 C 50 2, 110 9, 197 4"/></svg></span></div>` +
+      `<div class="bloc"><h3 data-t="h-expl">En détail</h3><p>${t.explication}</p></div>` +
+      `<div class="bloc"><h3 data-t="h-ex">Exemple</h3><p>${t.exemple}</p></div>` +
+      `<div class="bloc"><h3 data-t="h-lien">Lien avec la slide précédente</h3><p>La slide 4 décompose l'erreur totale E en erreurs locales Eᵢ ; on n'en utilise ici qu'une à la fois. <button class="source" data-slide="4">Slide 4</button></p></div>` +
+      `<div class="encadre"><span class="disque"><svg class="icone"><use href="#i-etoile"/></svg></span><div><h3 data-t="h-retenir">À retenir</h3><p>${t.retenir}</p></div></div>`;
+    traduire($("contenu"));
+  }
+  // Changer de niveau = une nouvelle génération de l'agent : la mascotte réfléchit, puis le texte arrive.
+  document.querySelectorAll(".niveaux button").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.niveau === niveau) return;
+    niveau = b.dataset.niveau;
+    placerCurseur();
+    $("contenu").classList.add("genere");
+    etatMascotte(mascotte, "reflechit");
+    clearTimeout(window._gen);
+    window._gen = setTimeout(() => {
+      rendreExplication(true);
+      $("contenu").classList.remove("genere");
+      etatMascotte(mascotte, "");
+    }, reduireMouvement() ? 150 : 650);
+  }));
+  rendreExplication(false);
+  placerCurseur();
+
+  // ---------- Slides : navigation, bande de maîtrise, sources cliquables ----------
+  const total = 24;
+  const etats = { 1: "testee", 2: "testee", 3: "comprise", 4: "comprise", 6: "vue", 7: "vue" };
+  const bande = $("bande");
+  for (let n = 1; n <= total; n++) {
+    const b = document.createElement("button");
+    b.className = "vignette"; b.dataset.etat = etats[n] || "";
+    b.innerHTML = `<span>${n}</span><span class="point"></span>`;
+    b.setAttribute("aria-label", `Slide ${n}`);
+    b.addEventListener("click", () => aller(n));
+    bande.appendChild(b);
+  }
+  let numero = 5;
+  function aller(n, repere) {
+    numero = Math.min(total, Math.max(1, n));
+    const s = slides[numero] || { titre: `Slide ${numero}`, corps: `<p>Contenu de la slide ${numero} (démonstration : seules les slides 3, 4, 5, 7, 13 et 23 sont remplies).</p>` };
+    $("slide").classList.add("change");
+    setTimeout(() => {
+      $("slide").innerHTML = `<h2>${s.titre}</h2>${s.corps}`;
+      $("slide").setAttribute("aria-label", `Slide ${numero} : ${s.titre}`);
+      $("slide").classList.remove("change");
+    }, 120);
+    $("numero").textContent = numero;
+    $("numero-nav").textContent = numero;
+    [...bande.children].forEach((b, i) => b.setAttribute("aria-current", i + 1 === numero));
+    $("precedente").disabled = numero === 1;
+    $("suivante").disabled = numero === total;
+    const v = bande.children[numero - 1];
+    bande.scrollLeft = v.offsetLeft - bande.offsetLeft - (bande.clientWidth - v.offsetWidth) / 2;
+    if (repere) {
+      // Une source cliquée amène à sa slide, qui s'éclaire brièvement en or.
+      $("cadre").classList.remove("repere"); void $("cadre").offsetWidth; $("cadre").classList.add("repere");
+      if (innerWidth <= 980) $("cadre").scrollIntoView({ behavior: reduireMouvement() ? "auto" : "smooth", block: "center" });
+    }
+  }
+  $("precedente").addEventListener("click", () => aller(numero - 1));
+  $("suivante").addEventListener("click", () => aller(numero + 1));
+  document.addEventListener("click", e => {
+    const src = e.target.closest(".source[data-slide]");
+    if (src) aller(+src.dataset.slide, true);
+  });
+  aller(5);
+
+  // ---------- Questions : réponse « streamée » avec ses sources, ou refus ----------
+  const fil = $("fil");
+  function ajouterEtudiant(texte) {
+    fil.insertAdjacentHTML("beforeend", `<div class="tour etudiant entre"><div class="bulle"></div></div>`);
+    fil.lastElementChild.querySelector(".bulle").textContent = texte;
+  }
+  function repondre(question) {
+    const q = question.toLowerCase();
+    const r = reponses.find(x => x.mots.some(m => q.includes(m)));
+    fil.insertAdjacentHTML("beforeend", `<div class="tour tuteur entre"><span data-mascotte></span><div class="bulle curseur-ecriture"></div></div>`);
+    const tour = fil.lastElementChild;
+    dessinerMascottes(tour);
+    tour.querySelector(".mascotte").style.cssText = "width:34px;height:34px";
+    etatMascotte(tour, "reflechit");
+    fil.scrollTop = fil.scrollHeight;
+    const bulle = tour.querySelector(".bulle");
+    const texte = r ? r.texte : "Ce n'est pas dans ce cours : le chapitre 3 ne traite pas de ce point. Je peux t'expliquer le choix du pas décroissant.";
+    const sources = r ? r.sources : [23];
+    if (!r) bulle.classList.add("refus");
+    const mots = texte.split(" ");
+    let i = 0;
+    setTimeout(function ecrire() {
+      bulle.textContent = mots.slice(0, ++i).join(" ");
+      fil.scrollTop = fil.scrollHeight;
+      if (i < mots.length) return setTimeout(ecrire, reduireMouvement() ? 0 : 35);
+      bulle.classList.remove("curseur-ecriture");
+      bulle.insertAdjacentHTML("beforeend", " " + sources.map(n => `<button class="source" data-slide="${n}">Slide ${n}</button>`).join(""));
+      etatMascotte(tour, r ? "" : "oups", r ? 0 : 1600);
+    }, reduireMouvement() ? 100 : 700);
+  }
+  function envoyer(texte) {
+    if (!texte.trim()) return;
+    ajouterEtudiant(texte);
+    repondre(texte);
+  }
+  $("formulaire").addEventListener("submit", e => { e.preventDefault(); envoyer($("question").value); $("question").value = ""; });
+  document.querySelectorAll("#suggestions button").forEach(b => b.addEventListener("click", () => envoyer(b.textContent)));
+  // Un premier échange déjà présent, pour la démo.
+  ajouterEtudiant("Pourquoi la méthode oscille-t-elle autour du minimum ?");
+  fil.insertAdjacentHTML("beforeend", `<div class="tour tuteur"><span data-mascotte></span><div class="bulle">${reponses[0].texte} <button class="source" data-slide="7">Slide 7</button><button class="source" data-slide="23">Slide 23</button></div></div>`);
+  dessinerMascottes(fil);
+  fil.querySelectorAll(".mascotte").forEach(m => (m.style.cssText = "width:34px;height:34px"));
+  fil.querySelectorAll(".entre").forEach(e => e.classList.remove("entre"));
+
+  // ---------- Langue de l'interface ----------
+  brancherLangues({
+    fr: { "tester-court": "Me tester", demander: "Demander", depot: "Déposer", cours: "Cours", quiz: "Quiz", slide: "Slide", prec: "Précédente", suiv: "Suivante", vue: "vue", comprise: "comprise", testee: "testée", expl: "Explication", verifie: "Vérifié par le Critic", debutant: "Débutant", intermediaire: "Intermédiaire", avance: "Avancé", tester: "Me tester sur cette slide", ecouter: "Écouter", ress: "Ressources", questions: "Questions sur le cours", "sous-questions": "Réponses tirées de ton cours, avec leurs slides.", envoyer: "Envoyer", ph: "Pose une question sur ce cours…", "h-expl": "En détail", "h-ex": "Exemple", "h-lien": "Lien avec la slide précédente", "h-retenir": "À retenir" },
+    en: { "tester-court": "Test me", demander: "Ask", depot: "Upload", cours: "Course", quiz: "Quiz", slide: "Slide", prec: "Previous", suiv: "Next", vue: "seen", comprise: "understood", testee: "tested", expl: "Explanation", verifie: "Checked by the Critic", debutant: "Beginner", intermediaire: "Intermediate", avance: "Advanced", tester: "Test me on this slide", ecouter: "Listen", ress: "Resources", questions: "Ask about the course", "sous-questions": "Answers drawn from your course, with their slides.", envoyer: "Send", ph: "Ask a question about this course…", "h-expl": "In detail", "h-ex": "Example", "h-lien": "Link with the previous slide", "h-retenir": "Key takeaway" },
+    ar: { "tester-court": "اختبرني", demander: "اسأل", depot: "رفع", cours: "الدرس", quiz: "اختبار", slide: "شريحة", prec: "السابقة", suiv: "التالية", vue: "تمت رؤيتها", comprise: "مفهومة", testee: "مختبرة", expl: "الشرح", verifie: "تحقق منه المُراجِع", debutant: "مبتدئ", intermediaire: "متوسط", avance: "متقدم", tester: "اختبرني في هذه الشريحة", ecouter: "استمع", ress: "مصادر", questions: "أسئلة حول الدرس", "sous-questions": "إجابات مأخوذة من درسك مع شرائحها.", envoyer: "إرسال", ph: "اطرح سؤالاً حول هذا الدرس…", "h-expl": "بالتفصيل", "h-ex": "مثال", "h-lien": "الصلة بالشريحة السابقة", "h-retenir": "للتذكّر" }
+  }, () => { placerCurseur(); aller(numero); });
+</script>
+</body>
+</html>

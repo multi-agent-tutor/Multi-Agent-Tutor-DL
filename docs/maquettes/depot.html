@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Déposer un cours — Multi-Agent Tutor</title>
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="img/logo-icone.png" type="image/png">
+<link rel="stylesheet" href="maquettes.css">
+<style>
+/* Page Dépôt (maquette D2) : même système que Cours et Quiz (DESIGN.md, registre « outil »). */
+.page-depot { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 28px; max-width: 1180px; margin: 0 auto; padding: 36px 28px 56px; }
+.entete-depot { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.entete-depot .mascotte { width: 72px; height: 72px; }
+.entete-depot h1 { font-size: clamp(26px, 3vw, 34px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 6px; }
+.entete-depot p { margin: 0; color: var(--gris); max-width: 52ch; }
+
+.zone { position: relative; display: grid; justify-items: center; gap: 12px; padding: 44px 24px; text-align: center; cursor: pointer;
+  border: 2px dashed var(--filet-fort, #CBD5E1); border-radius: 18px; background: var(--surface);
+  transition: border-color 160ms ease, background-color 160ms ease, transform 200ms var(--ease-out); }
+.zone input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.zone:focus-within { outline: 2px solid var(--bleu); outline-offset: 2px; }
+.zone .disque { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; background: var(--bleu-ciel); color: var(--bleu);
+  transition: transform 240ms var(--ease-out), background-color 160ms ease, color 160ms ease; }
+.zone .disque svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.zone strong { font-size: 18px; }
+.zone .lien-choisir { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px; }
+.zone small { color: var(--gris); font-size: 13.5px; }
+.zone.survol { border-color: var(--bleu); background: var(--bleu-ciel); transform: scale(1.01); }
+.zone.survol .disque { background: var(--bleu); color: #fff; transform: translateY(-4px); }
+@media (hover: hover) and (pointer: fine) { .zone:hover { border-color: var(--bleu-clair); } .zone:hover .disque { transform: translateY(-3px); } }
+.zone[hidden] { display: none; }
+
+.erreur { display: flex; gap: 10px; align-items: center; margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: var(--rouge-doux, #FEE2E2);
+  color: #7F1D1D; font-size: 14.5px; }
+.erreur svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--rouge); stroke-width: 2.2; stroke-linecap: round; }
+.erreur[hidden] { display: none; }
+
+.fichier-choisi { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 16px 18px; }
+.fichier-choisi[hidden] { display: none; }
+.badge-type { display: grid; place-items: center; width: 48px; height: 56px; border-radius: 10px; background: var(--bleu); color: #fff; font-weight: 700; font-size: 12.5px; letter-spacing: .02em; }
+.badge-type.pdf { background: var(--marine); }
+.fichier-choisi .nom { font-weight: 600; overflow-wrap: anywhere; }
+.fichier-choisi .meta { color: var(--gris); font-size: 13.5px; }
+
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+.options[hidden] { display: none; }
+.option { display: grid; gap: 6px; }
+.option > span { font-size: 13px; font-weight: 600; color: var(--gris); }
+.option select { height: 42px; padding: 0 12px; border: 1px solid var(--filet-fort, #CBD5E1); border-radius: 8px; background: var(--surface);
+  font: 500 15px var(--texte, inherit); color: var(--marine); }
+.actions-depot { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.actions-depot[hidden] { display: none; }
+
+.etapes-analyse { margin: 18px 0 0; padding: 18px 20px; list-style: none; display: grid; gap: 12px; }
+.etapes-analyse[hidden] { display: none; }
+.etapes-analyse li { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: center; color: var(--gris); transition: color 200ms ease; }
+.etapes-analyse .pastille { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--filet-fort, #CBD5E1); background: var(--surface); }
+.etapes-analyse .pastille svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.etapes-analyse li.en-cours { color: var(--marine); font-weight: 600; }
+.etapes-analyse li.en-cours .pastille { border-color: var(--bleu); border-right-color: transparent; animation: tourne 700ms linear infinite; }
+.etapes-analyse li.fait { color: var(--marine); }
+.etapes-analyse li.fait .pastille { border-color: var(--vert); background: var(--vert); }
+.etapes-analyse li.fait .pastille svg { opacity: 1; }
+.etapes-analyse .agent { font-size: 12.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--bleu-ciel); color: var(--bleu-fonce); }
+@keyframes tourne { to { transform: rotate(1turn); } }
+
+.pret { margin-top: 18px; padding: 22px; display: grid; gap: 14px; border-color: var(--vert); }
+.pret[hidden] { display: none; }
+.pret .titre-pret { display: flex; align-items: center; gap: 12px; }
+.pret .titre-pret .mascotte { width: 52px; height: 52px; }
+.pret h2 { margin: 0; font-size: 21px; }
+.pret p { margin: 0; color: var(--gris); }
+.pret .verifie { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; color: var(--vert); }
+.pret .verifie svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.mode-demo { margin-top: 14px; font-size: 13px; color: var(--gris); }
+.mode-demo[hidden] { display: none; }
+
+.cote { display: grid; gap: 18px; align-content: start; }
+.cote .panneau { padding: 20px; }
+.cote h2 { font-size: 16px; margin: 0 0 12px; }
+.liste-garanties { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; font-size: 14.5px; }
+.liste-garanties li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+.liste-garanties svg { width: 20px; height: 20px; fill: none; stroke: var(--bleu); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.recents { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.recents a { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: var(--marine);
+  transition: background-color 160ms ease; }
+.recents a:hover { background: var(--bleu-ciel); }
+.recents .badge-type { width: 36px; height: 42px; font-size: 11px; }
+.recents b { display: block; font-size: 14.5px; }
+.recents span { font-size: 13px; color: var(--gris); }
+
+@media (max-width: 980px) { .page-depot { grid-template-columns: 1fr; padding: 22px 16px 96px; } }
+@media (max-width: 640px) { .options { grid-template-columns: 1fr; } .zone { padding: 32px 16px; } .entete-depot .mascotte { width: 56px; height: 56px; } }
+@media (prefers-reduced-motion: reduce) {
+  .zone, .zone .disque { transition-property: border-color, background-color, color; }
+  .zone.survol, .zone.survol .disque { transform: none; }
+  .etapes-analyse li.en-cours .pastille { animation: none; border-right-color: var(--bleu); }
+}
+</style>
+</head>
+<body>
+<header class="barre">
+  <a class="marque" href="accueil/index.html" aria-label="Multi-Agent Tutor, page d'accueil"><img src="img/logo-icone.png" alt="" width="44" height="44"><span class="marque-nom">Multi-Agent <b>Tutor</b></span></a>
+  <nav class="onglets" aria-label="Sections">
+    <a href="depot.html" aria-current="page"><span data-t="depot">Déposer</span></a>
+    <a href="cours.html"><span data-t="cours">Cours</span></a>
+    <a href="quiz.html"><span data-t="quiz">Quiz</span></a>
+  </nav>
+  <div class="langues" role="group" aria-label="Langue">
+    <button data-lang="fr" aria-pressed="true">FR</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+    <button data-lang="ar" aria-pressed="false" aria-label="العربية">AR</button>
+  </div>
+</header>
+
+<main class="page-depot">
+  <div>
+    <div class="entete-depot">
+      <span data-mascotte id="mascotte-depot"></span>
+      <div>
+        <h1 data-t="titre">Dépose ton cours</h1>
+        <p data-t="chapo">Un fichier PPTX ou PDF, même scanné. Le tuteur lit chaque slide sur ta machine, puis tu peux te faire expliquer le cours, poser tes questions et réviser.</p>
+      </div>
+    </div>
+
+    <label class="zone" id="zone">
+      <input type="file" id="fichier" accept=".pdf,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+      <span class="disque" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span>
+      <strong data-t="glisser">Glisse ton fichier ici</strong>
+      <span><span data-t="ou">ou</span> <span class="lien-choisir" data-t="choisir">choisis-le sur ton ordinateur</span></span>
+      <small data-t="formats">PPTX ou PDF · 50 Mo au plus</small>
+    </label>
+    <p class="erreur" id="erreur" role="alert" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/></svg><span id="erreur-texte"></span></p>
+
+    <div class="panneau fichier-choisi" id="choisi" hidden>
+      <span class="badge-type" id="badge">PPTX</span>
+      <div><div class="nom" id="nom-fichier"></div><div class="meta" id="meta-fichier"></div></div>
+      <button class="bouton discret" type="button" id="changer" data-t="changer">Changer</button>
+    </div>
+
+    <div class="options" id="options" hidden>
+      <label class="option"><span data-t="langue-cours">Langue du cours</span>
+        <select id="langue-cours"><option value="auto" data-t="auto">Détecter automatiquement</option><option value="fr">Français</option><option value="en">English</option><option value="ar">العربية</option></select></label>
+      <label class="option"><span data-t="niveau">Niveau des explications</span>
+        <select id="niveau"><option value="debutant" data-t="debutant">Débutant</option><option value="intermediaire" selected data-t="intermediaire">Intermédiaire</option><option value="avance" data-t="avance">Avancé</option></select></label>
+    </div>
+    <div class="actions-depot" id="actions" hidden>
+      <button class="bouton principal" type="button" id="lancer"><span data-t="lancer">Analyser le cours</span></button>
+    </div>
+
+    <ol class="panneau etapes-analyse" id="etapes" hidden aria-live="polite">
+      <li><span class="pastille"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span data-t="e1">Lecture du fichier et découpage en slides</span><span class="agent">Ingestion</span></li>
+      <li><span class="pastille"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span data-t="e2">Texte, notes et OCR des slides scannées</span><span class="agent">OCR</span></li>
+      <li><span class="pastille"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span data-t="e3">Description des figures et des formules</span><span class="agent">VLM</span></li>
+      <li><span class="pastille"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span data-t="e4">Indexation pour les questions sourcées</span><span class="agent">RAG</span></li>
+    </ol>
+
+    <section class="panneau pret" id="pret" hidden aria-labelledby="pret-titre">
+      <div class="titre-pret"><span data-mascotte id="mascotte-pret"></span><div><h2 id="pret-titre"></h2><p id="pret-detail"></p></div></div>
+      <span class="verifie"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span data-t="local">Analysé sur ta machine, rien n'a été envoyé en ligne</span></span>
+      <div class="actions-depot">
+        <a class="bouton principal" href="cours.html" id="ouvrir"><span data-t="ouvrir">Ouvrir le cours</span></a>
+        <a class="bouton" href="quiz.html"><span data-t="tester">Me tester tout de suite</span></a>
+        <button class="bouton discret" type="button" id="autre" data-t="autre">Déposer un autre cours</button>
+      </div>
+    </section>
+    <p class="mode-demo" id="mode-demo" hidden data-t="demo">Mode démo : l'API locale n'est pas lancée, l'analyse est simulée sur le cours d'exemple.</p>
+  </div>
+
+  <aside class="cote">
+    <section class="panneau">
+      <h2 data-t="garanties-titre">Ce qui se passe sur ta machine</h2>
+      <ul class="liste-garanties">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-t="g1">Ton fichier est lu en local : aucune API, aucun envoi en ligne.</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span data-t="g2">Chaque slide garde son numéro : toutes les réponses citent [Slide N].</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span data-t="g3">Cours en français, en anglais ou en arabe.</span></li>
+      </ul>
+    </section>
+    <section class="panneau">
+      <h2 data-t="recents-titre">Cours déjà déposés</h2>
+      <ul class="recents">
+        <li><a href="cours.html"><span class="badge-type pdf">PDF</span><span><b>Optimisation pour le ML · Ch. 3</b><span data-t="r1">24 slides · français</span></span></a></li>
+        <li><a href="cours.html"><span class="badge-type">PPTX</span><span><b>Régression linéaire</b><span data-t="r2">2 slides · français</span></span></a></li>
+      </ul>
+    </section>
+  </aside>
+</main>
+
+<script src="maquettes.js"></script>
+<script>
+const API = "http://localhost:8000";
+const TAILLE_MAX = 50 * 1024 * 1024;
+const zone = document.getElementById("zone"), entree = document.getElementById("fichier");
+const erreur = document.getElementById("erreur"), erreurTexte = document.getElementById("erreur-texte");
+const choisi = document.getElementById("choisi"), options = document.getElementById("options"), actions = document.getElementById("actions");
+const etapes = document.getElementById("etapes"), pret = document.getElementById("pret"), modeDemo = document.getElementById("mode-demo");
+let fichier = null;
+
+const T = {
+  fr: { erreurType: "Ce fichier n'est ni un PPTX ni un PDF.", erreurTaille: "Ce fichier dépasse 50 Mo.", erreurApi: "L'analyse a échoué : ", pretTitre: n => `Ton cours est prêt : ${n} slides`, pretDetail: "Chaque slide est lue, indexée et prête à être expliquée.", slides: "slides" },
+  en: { erreurType: "This file is neither a PPTX nor a PDF.", erreurTaille: "This file is larger than 50 MB.", erreurApi: "The analysis failed: ", pretTitre: n => `Your course is ready: ${n} slides`, pretDetail: "Every slide is read, indexed and ready to be explained.", slides: "slides" },
+  ar: { erreurType: "هذا الملف ليس PPTX ولا PDF.", erreurTaille: "حجم هذا الملف يتجاوز 50 ميغابايت.", erreurApi: "فشل التحليل: ", pretTitre: n => `درسك جاهز: ${n} شريحة`, pretDetail: "تمت قراءة كل شريحة وفهرستها، وهي جاهزة للشرح.", slides: "شرائح" },
+};
+const t = () => T[LANGUE] || T.fr;
+
+function montrerErreur(message) { erreurTexte.textContent = message; erreur.hidden = !message; }
+function taille(octets) { return octets > 1048576 ? `${(octets / 1048576).toFixed(1).replace(".", ",")} Mo` : `${Math.max(1, Math.round(octets / 1024))} Ko`; }
+
+function choisir(f) {
+  if (!f) return;
+  const ext = f.name.split(".").pop().toLowerCase();
+  if (!["pdf", "pptx"].includes(ext)) { montrerErreur(t().erreurType); etatMascotte(document.getElementById("mascotte-depot"), "oups", 1600); return; }
+  if (f.size > TAILLE_MAX) { montrerErreur(t().erreurTaille); etatMascotte(document.getElementById("mascotte-depot"), "oups", 1600); return; }
+  montrerErreur("");
+  fichier = f;
+  const badge = document.getElementById("badge");
+  badge.textContent = ext.toUpperCase();
+  badge.classList.toggle("pdf", ext === "pdf");
+  document.getElementById("nom-fichier").textContent = f.name;
+  document.getElementById("meta-fichier").textContent = taille(f.size);
+  zone.hidden = true; choisi.hidden = false; options.hidden = false; actions.hidden = false;
+  document.getElementById("lancer").focus();
+}
+
+entree.addEventListener("change", () => choisir(entree.files[0]));
+["dragenter", "dragover"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add("survol"); }));
+["dragleave", "drop"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove("survol"); }));
+zone.addEventListener("drop", e => choisir(e.dataTransfer.files[0]));
+document.getElementById("changer").addEventListener("click", () => { entree.value = ""; entree.click(); });
+
+function reinitialiser() {
+  fichier = null; entree.value = "";
+  zone.hidden = false; choisi.hidden = true; options.hidden = true; actions.hidden = true; etapes.hidden = true; pret.hidden = true; modeDemo.hidden = true;
+  etapes.querySelectorAll("li").forEach(li => li.className = "");
+  document.getElementById("lancer").disabled = false;
+  zone.focus();
+}
+document.getElementById("autre").addEventListener("click", reinitialiser);
+
+async function apiDisponible() {
+  try {
+    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(800) });
+    return r.ok;
+  } catch { return false; }
+}
+
+const pause = ms => new Promise(r => setTimeout(r, reduireMouvement() ? Math.min(ms, 120) : ms));
+
+document.getElementById("lancer").addEventListener("click", async () => {
+  if (!fichier) return;
+  const bouton = document.getElementById("lancer");
+  bouton.disabled = true;
+  etapes.hidden = false;
+  const lignes = [...etapes.querySelectorAll("li")];
+  const mascotte = document.getElementById("mascotte-depot");
+  etatMascotte(mascotte, "reflechit");
+
+  // Vraie API d'Ali (A1) si elle tourne en local, sinon analyse simulée sur le cours d'exemple.
+  let cours = null, reel = await apiDisponible();
+  const envoi = reel ? (async () => {
+    const donnees = new FormData();
+    donnees.append("fichier", fichier);
+    const r = await fetch(`${API}/upload`, { method: "POST", body: donnees });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.statusText);
+    return r.json();
+  })() : null;
+
+  try {
+    for (const [i, li] of lignes.entries()) {
+      li.className = "en-cours";
+      await pause(700 + i * 150);
+      if (i === lignes.length - 1 && envoi) cours = await envoi;
+      li.className = "fait";
+    }
+  } catch (e) {
+    etatMascotte(mascotte, "oups", 2000);
+    montrerErreur(t().erreurApi + e.message);
+    bouton.disabled = false;
+    return;
+  }
+  etatMascotte(mascotte, "");
+  const n = cours?.nombre_slides ?? 24;
+  document.getElementById("pret-titre").textContent = t().pretTitre(n);
+  document.getElementById("pret-detail").textContent = cours?.titre ? `${cours.titre} · ${t().pretDetail}` : t().pretDetail;
+  pret.hidden = false;
+  modeDemo.hidden = reel;
+  etatMascotte(document.getElementById("mascotte-pret"), "contente", 1800);
+  document.getElementById("ouvrir").focus();
+});
+
+const LIBELLES_DEPOT = {
+  fr: { depot: "Déposer", cours: "Cours", quiz: "Quiz", titre: "Dépose ton cours", chapo: "Un fichier PPTX ou PDF, même scanné. Le tuteur lit chaque slide sur ta machine, puis tu peux te faire expliquer le cours, poser tes questions et réviser.", glisser: "Glisse ton fichier ici", ou: "ou", choisir: "choisis-le sur ton ordinateur", formats: "PPTX ou PDF · 50 Mo au plus", changer: "Changer", "langue-cours": "Langue du cours", auto: "Détecter automatiquement", niveau: "Niveau des explications", debutant: "Débutant", intermediaire: "Intermédiaire", avance: "Avancé", lancer: "Analyser le cours", e1: "Lecture du fichier et découpage en slides", e2: "Texte, notes et OCR des slides scannées", e3: "Description des figures et des formules", e4: "Indexation pour les questions sourcées", local: "Analysé sur ta machine, rien n'a été envoyé en ligne", ouvrir: "Ouvrir le cours", tester: "Me tester tout de suite", autre: "Déposer un autre cours", demo: "Mode démo : l'API locale n'est pas lancée, l'analyse est simulée sur le cours d'exemple.", "garanties-titre": "Ce qui se passe sur ta machine", g1: "Ton fichier est lu en local : aucune API, aucun envoi en ligne.", g2: "Chaque slide garde son numéro : toutes les réponses citent [Slide N].", g3: "Cours en français, en anglais ou en arabe.", "recents-titre": "Cours déjà déposés", r1: "24 slides · français", r2: "2 slides · français" },
+  en: { depot: "Upload", cours: "Course", quiz: "Quiz", titre: "Upload your course", chapo: "A PPTX or PDF file, even scanned. The tutor reads every slide on your machine, then you can get the course explained, ask questions and revise.", glisser: "Drop your file here", ou: "or", choisir: "pick it from your computer", formats: "PPTX or PDF · 50 MB max", changer: "Change", "langue-cours": "Course language", auto: "Detect automatically", niveau: "Explanation level", debutant: "Beginner", intermediaire: "Intermediate", avance: "Advanced", lancer: "Analyse the course", e1: "Reading the file and splitting it into slides", e2: "Text, notes and OCR of scanned slides", e3: "Describing figures and formulas", e4: "Indexing for sourced answers", local: "Analysed on your machine, nothing was sent online", ouvrir: "Open the course", tester: "Quiz me now", autre: "Upload another course", demo: "Demo mode: the local API is not running, the analysis is simulated on the sample course.", "garanties-titre": "What happens on your machine", g1: "Your file is read locally: no API, nothing sent online.", g2: "Every slide keeps its number: every answer cites [Slide N].", g3: "Courses in French, English or Arabic.", "recents-titre": "Uploaded courses", r1: "24 slides · French", r2: "2 slides · French" },
+  ar: { depot: "رفع", cours: "الدرس", quiz: "اختبار", titre: "ارفع درسك", chapo: "ملف PPTX أو PDF، حتى لو كان ممسوحًا ضوئيًا. يقرأ المعلم كل شريحة على جهازك، ثم يمكنك طلب شرح الدرس وطرح أسئلتك والمراجعة.", glisser: "اسحب ملفك إلى هنا", ou: "أو", choisir: "اختره من حاسوبك", formats: "PPTX أو PDF · 50 ميغابايت كحد أقصى", changer: "تغيير", "langue-cours": "لغة الدرس", auto: "اكتشاف تلقائي", niveau: "مستوى الشرح", debutant: "مبتدئ", intermediaire: "متوسط", avance: "متقدم", lancer: "تحليل الدرس", e1: "قراءة الملف وتقسيمه إلى شرائح", e2: "النص والملاحظات والتعرف الضوئي", e3: "وصف الأشكال والمعادلات", e4: "الفهرسة للإجابات الموثقة", local: "تم التحليل على جهازك، لم يُرسل أي شيء عبر الإنترنت", ouvrir: "فتح الدرس", tester: "اختبرني الآن", autre: "رفع درس آخر", demo: "وضع العرض: واجهة البرمجة المحلية غير مشغلة، والتحليل محاكى على الدرس النموذجي.", "garanties-titre": "ما يحدث على جهازك", g1: "يُقرأ ملفك محليًا: بلا واجهة برمجة ولا إرسال عبر الإنترنت.", g2: "تحتفظ كل شريحة برقمها: كل إجابة تذكر [Slide N].", g3: "دروس بالفرنسية أو الإنجليزية أو العربية.", "recents-titre": "الدروس المرفوعة", r1: "24 شريحة · الفرنسية", r2: "شريحتان · الفرنسية" },
+};
+dessinerMascottes();
+brancherLangues(LIBELLES_DEPOT);
+</script>
+</body>
+</html>

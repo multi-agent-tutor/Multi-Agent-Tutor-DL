@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T08:26:43+00:00",
+  "title": "Design System: Multi-Agent Tutor",
+  "extensions": {
+    "source": "Valeurs de couleur, de police et de bouton : charte graphique D1 de Both (docs/charte.md, branche both), variables --mat-* reprises telles quelles dans docs/maquettes/maquettes.css.",
+    "colorMeta": {
+      "bleu": {
+        "role": "primary",
+        "displayName": "Bleu roi",
+        "canonical": "#2563EB",
+        "charterVar": "--mat-primaire",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1D4ED8",
+          "#2563EB",
+          "#3B82F6",
+          "#93C5FD",
+          "#DBEAFE",
+          "#EFF6FF"
+        ]
+      },
+      "bleu-fonce": {
+        "role": "primary",
+        "displayName": "Bleu foncé",
+        "canonical": "#1D4ED8",
+        "charterVar": "--mat-primaire-survol",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#60A5FA",
+          "#BFDBFE",
+          "#EFF6FF"
+        ]
+      },
+      "bleu-clair": {
+        "role": "primary",
+        "displayName": "Bleu clair",
+        "canonical": "#4C8AFD",
+        "charterVar": "--mat-secondaire",
+        "tonalRamp": [
+          "#0F2A63",
+          "#1A4396",
+          "#2A63D4",
+          "#4C8AFD",
+          "#76A6FD",
+          "#A3C3FE",
+          "#D1E1FE",
+          "#EEF4FF"
+        ]
+      },
+      "bleu-ciel": {
+        "role": "primary",
+        "displayName": "Bleu ciel",
+        "canonical": "#EFF5FF",
+        "derivedFrom": "--mat-fond-clair"
+      },
+      "bleu-ciel-2": {
+        "role": "primary",
+        "displayName": "Bleu très clair",
+        "canonical": "#DBEAFE",
+        "charterVar": "--mat-fond-clair"
+      },
+      "or": {
+        "role": "secondary",
+        "displayName": "Jaune du pompon",
+        "canonical": "#FBBF24",
+        "charterVar": "--mat-accent",
+        "tonalRamp": [
+          "#451A03",
+          "#78350F",
+          "#B45309",
+          "#F59E0B",
+          "#FBBF24",
+          "#FCD34D",
+          "#FDE68A",
+          "#FEF3C7"
+        ]
+      },
+      "or-doux": {
+        "role": "secondary",
+        "displayName": "Jaune pâle",
+        "canonical": "#FEF3C7",
+        "derivedFrom": "--mat-accent"
+      },
+      "or-texte": {
+        "role": "secondary",
+        "displayName": "Ambre encre",
+        "canonical": "#78350F",
+        "derivedFrom": "--mat-accent"
+      },
+      "vert": {
+        "role": "tertiary",
+        "displayName": "Vert succès",
+        "canonical": "#15803D",
+        "charterVar": "--mat-succes",
+        "tonalRamp": [
+          "#052E16",
+          "#14532D",
+          "#166534",
+          "#15803D",
+          "#22C55E",
+          "#86EFAC",
+          "#BBF7D0",
+          "#DCFCE7"
+        ]
+      },
+      "vert-doux": {
+        "role": "tertiary",
+        "displayName": "Vert pâle",
+        "canonical": "#DCFCE7",
+        "derivedFrom": "--mat-succes"
+      },
+      "rouge": {
+        "role": "tertiary",
+        "displayName": "Rouge erreur",
+        "canonical": "#DC2626",
+        "charterVar": "--mat-erreur",
+        "tonalRamp": [
+          "#450A0A",
+          "#7F1D1D",
+          "#B91C1C",
+          "#DC2626",
+          "#EF4444",
+          "#FCA5A5",
+          "#FECACA",
+          "#FEE2E2"
+        ]
+      },
+      "rouge-doux": {
+        "role": "tertiary",
+        "displayName": "Rouge pâle",
+        "canonical": "#FEE2E2",
+        "derivedFrom": "--mat-erreur"
+      },
+      "marine": {
+        "role": "neutral",
+        "displayName": "Bleu marine",
+        "canonical": "#0B1A45",
+        "charterVar": "--mat-texte",
+        "tonalRamp": [
+          "#0B1A45",
+          "#1E293B",
+          "#334155",
+          "#475569",
+          "#94A3B8",
+          "#CBD5E1",
+          "#E2E8F0",
+          "#F8FAFC"
+        ]
+      },
+      "marine-2": {
+        "role": "neutral",
+        "displayName": "Ardoise appuyée",
+        "canonical": "#334155",
+        "derivedFrom": "--mat-texte-secondaire"
+      },
+      "gris": {
+        "role": "neutral",
+        "displayName": "Ardoise",
+        "canonical": "#475569",
+        "charterVar": "--mat-texte-secondaire"
+      },
+      "filet": {
+        "role": "neutral",
+        "displayName": "Gris clair",
+        "canonical": "#E2E8F0",
+        "charterVar": "--mat-bordure"
+      },
+      "filet-fort": {
+        "role": "neutral",
+        "displayName": "Gris appuyé",
+        "canonical": "#CBD5E1",
+        "derivedFrom": "--mat-bordure"
+      },
+      "fond": {
+        "role": "neutral",
+        "displayName": "Fond",
+        "canonical": "#F8FAFC",
+        "charterVar": "--mat-fond"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#FFFFFF",
+        "charterVar": "--mat-surface"
+      },
+      "marine-surface": {
+        "role": "neutral",
+        "displayName": "Marine surface",
+        "canonical": "#182851",
+        "charterVar": null,
+        "derivedFrom": "--mat-texte",
+        "usage": "Landing uniquement : surface des boutons de demande sur les bandes marine."
+      },
+      "sur-marine": {
+        "role": "neutral",
+        "displayName": "Bleu pâle sur marine",
+        "canonical": "#C7D2FE",
+        "charterVar": null,
+        "derivedFrom": "--mat-fond-clair",
+        "usage": "Landing uniquement : texte secondaire sur les bandes marine."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Le score final du quiz, seul."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Titre de page (27px cours, 30px quiz ; 22-24px sous 980px). Charte : 28px."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Tête de panneau (21px), énoncé de question (24px, 1.35). Charte : 20px."
+      },
+      "lead": {
+        "displayName": "Idée clé",
+        "purpose": "L'idée clé de l'explication, une phrase."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Explications, bulles, choix ; paragraphes à 68ch maximum."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Boutons et citations en 600 15px (charte) ; rails, onglets, compteurs et noms d'agent en 700."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Position dans le cours, sous-titres, légende, compteurs, en ardoise."
+      },
+      "math": {
+        "displayName": "Formule",
+        "purpose": "Formule clé (23px), verso de flashcard (28px), formules de slide (17-21px)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ombre",
+        "value": "0 1px 2px rgba(14, 26, 61, 0.05), 0 12px 32px rgba(35, 80, 216, 0.08)",
+        "purpose": "Panneaux et cadre de slide."
+      },
+      {
+        "name": "ombre-forte",
+        "value": "0 18px 44px rgba(35, 80, 216, 0.18)",
+        "purpose": "La flashcard, seul objet manipulé."
+      },
+      {
+        "name": "lueur-action",
+        "value": "0 4px 12px rgba(37, 99, 235, 0.25)",
+        "purpose": "Bouton principal."
+      },
+      {
+        "name": "lueur-onglet",
+        "value": "0 4px 12px rgba(35, 80, 216, 0.3)",
+        "purpose": "Onglet Cours / Quiz actif."
+      },
+      {
+        "name": "lueur-segment",
+        "value": "0 2px 8px rgba(37, 99, 235, 0.3)",
+        "purpose": "Segment actif du sélecteur de niveau."
+      },
+      {
+        "name": "curseur-blanc",
+        "value": "0 2px 8px rgba(14, 26, 61, 0.12)",
+        "purpose": "Option choisie du sélecteur de mode."
+      },
+      {
+        "name": "halo-saisie",
+        "value": "0 0 0 4px #DBEAFE",
+        "purpose": "Focus du champ de question."
+      },
+      {
+        "name": "repere",
+        "value": "0 0 0 6px rgba(245, 178, 31, 0.55)",
+        "purpose": "Pic du halo jaune (900ms) quand une citation mène à la slide."
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid #2563EB; outline-offset: 2px; border-radius: 6px",
+      "purpose": "Focus clavier de tout élément interactif (charte D1)."
+    },
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Entrées, appuis, curseurs, états de la mascotte."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Retournement de flashcard, pulsation « réfléchit »."
+      },
+      {
+        "name": "etat-controle",
+        "value": "160ms",
+        "purpose": "Couleurs, bordures et appui des contrôles."
+      },
+      {
+        "name": "curseur-glisse",
+        "value": "220ms",
+        "purpose": "Segment actif du sélecteur de niveau."
+      },
+      {
+        "name": "entree-tour",
+        "value": "260ms",
+        "purpose": "Entrée d'un tour du fil de questions (fondu, 8px)."
+      },
+      {
+        "name": "eclat",
+        "value": "360ms",
+        "purpose": "Traits d'éclat de la mascotte contente, échelonnés 0/40/90ms."
+      },
+      {
+        "name": "retournement",
+        "value": "420ms",
+        "purpose": "Flashcard."
+      },
+      {
+        "name": "tracer",
+        "value": "450ms",
+        "purpose": "Trait bleu tracé sous la formule clé, après 80ms."
+      },
+      {
+        "name": "reflechit",
+        "value": "900ms infinite",
+        "purpose": "Trois points des yeux, décalés de 150ms."
+      },
+      {
+        "name": "entree-hero",
+        "value": "900ms",
+        "purpose": "Landing : lignes du titre du hero qui montent une fois, décalage 90ms."
+      },
+      {
+        "name": "surligneur",
+        "value": "700ms",
+        "purpose": "Landing : trait jaune « à retenir » tracé sous le dernier mot du hero et de la fin."
+      },
+      {
+        "name": "compteur",
+        "value": "1400ms",
+        "purpose": "Landing : chiffres qui comptent à l'arrivée (ease-out quartique)."
+      },
+      {
+        "name": "bandeau",
+        "value": "38s linear",
+        "purpose": "Landing : bandeau des matières en boucle, pause au survol, défilable à la main sous mouvement réduit."
+      },
+      {
+        "name": "degrade-vivant",
+        "value": "WebGL, continu",
+        "purpose": "Landing : dégradé des bandes marine, pause hors écran et onglet caché, figé sous mouvement réduit."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-etroit",
+        "value": "640px"
+      },
+      {
+        "name": "colonne-unique",
+        "value": "980px"
+      },
+      {
+        "name": "max-cours",
+        "value": "1440px"
+      },
+      {
+        "name": "max-quiz",
+        "value": "860px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "L'action principale d'une zone (« Me tester », « Envoyer »), aux valeurs de la charte D1.",
+      "html": "<button class=\"ds-bouton ds-principal\"><svg class=\"ds-icone\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14\"/><path d=\"M12 17h.01\"/></svg>Me tester sur cette slide</button>",
+      "css": ".ds-bouton { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 1px solid #2563EB; border-radius: 8px; background: #fff; color: #2563EB; font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif; font-weight: 600; font-size: 15px; cursor: pointer; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease; } .ds-principal { background: #2563EB; border-color: transparent; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.25); } .ds-principal:hover { background: #1D4ED8; } .ds-bouton:active { transform: scale(0.97); } .ds-bouton:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; } .ds-icone { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Bouton secondaire",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Actions de second rang (« Écouter », « Précédente ») : blanc, bordure 1px bleu roi.",
+      "html": "<button class=\"ds-bouton2\">Écouter</button>",
+      "css": ".ds-bouton2 { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid #2563EB; border-radius: 8px; background: #fff; color: #2563EB; font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif; font-weight: 600; font-size: 15px; cursor: pointer; transition: transform 160ms cubic-bezier(0.23,1,0.32,1), background-color 160ms ease; } .ds-bouton2:hover { background: #EFF5FF; } .ds-bouton2:active { transform: scale(0.97); } .ds-bouton2:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; } .ds-bouton2:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Bouton discret",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Actions mineures (« Ressources ») : transparent, texte ardoise.",
+      "html": "<button class=\"ds-discret\">Ressources</button>",
+      "css": ".ds-discret { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #475569; font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif; font-weight: 600; font-size: 15px; cursor: pointer; transition: background-color 160ms ease; } .ds-discret:hover { background: #EFF5FF; } .ds-discret:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Citation [Slide N]",
+      "kind": "chip",
+      "refersTo": "source-chip",
+      "description": "Pastille jaune du pompon, texte marine, coins 6px, cliquable vers la slide (charte D1).",
+      "html": "<p class=\"ds-p\">Le pas doit décroître <button class=\"ds-source\">Slide 23</button>.</p>",
+      "css": ".ds-p { font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif; color: #334155; line-height: 1.5; } .ds-source { display: inline-flex; padding: 0 8px; margin-inline: 2px; border: 0; border-radius: 6px; background: #FBBF24; color: #0B1A45; font-family: Inter, sans-serif; font-weight: 600; font-size: 0.85em; line-height: 1.7; cursor: pointer; transition: background-color 160ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-source:active { transform: scale(0.95); } .ds-source:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Champ de question",
+      "kind": "input",
+      "refersTo": "input-question",
+      "description": "Saisie en pilule avec le bouton Envoyer logé dedans.",
+      "html": "<form class=\"ds-saisie\"><input placeholder=\"Pose une question sur ce cours…\"><button class=\"ds-envoyer\" type=\"button\">Envoyer</button></form>",
+      "css": ".ds-saisie { display: flex; gap: 8px; align-items: center; border: 2.5px solid #CBD5E1; border-radius: 999px; background: #fff; padding: 5px 5px 5px 18px; transition: border-color 160ms ease, box-shadow 160ms ease; } .ds-saisie:focus-within { border-color: #2563EB; box-shadow: 0 0 0 4px #DBEAFE; } .ds-saisie input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: #0B1A45; font: 16px Inter, 'Segoe UI', Roboto, Arial, sans-serif; } .ds-saisie input::placeholder { color: #475569; } .ds-envoyer { min-height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #2563EB; color: #fff; font-family: Inter, sans-serif; font-weight: 600; font-size: 15px; cursor: pointer; } .ds-envoyer:hover { background: #1D4ED8; } .ds-envoyer:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Sélecteur de niveau",
+      "kind": "nav",
+      "refersTo": "level-selector",
+      "description": "Segmenté, segment actif bleu roi qui glisse d'un niveau à l'autre (charte D1).",
+      "html": "<div class=\"ds-niveaux\"><button aria-pressed=\"false\">Débutant</button><button aria-pressed=\"true\">Intermédiaire</button><button aria-pressed=\"false\">Avancé</button></div>",
+      "css": ".ds-niveaux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; padding: 4px; background: #EFF5FF; border: 1px solid #E2E8F0; border-radius: 10px; } .ds-niveaux button { border: 0; background: transparent; padding: 8px 6px; border-radius: 7px; font-family: Inter, sans-serif; font-weight: 700; font-size: 14.5px; color: #334155; cursor: pointer; transition: background-color 220ms cubic-bezier(0.23,1,0.32,1), color 160ms ease; } .ds-niveaux button[aria-pressed='true'] { background: #2563EB; color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,0.3); } .ds-niveaux button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Onglets Cours / Quiz",
+      "kind": "nav",
+      "refersTo": "tabs",
+      "description": "Rail bleu ciel en pilule, onglet actif plein bleu roi.",
+      "html": "<nav class=\"ds-onglets\"><a href=\"#\" aria-current=\"page\">Cours</a><a href=\"#\">Quiz</a></nav>",
+      "css": ".ds-onglets { display: inline-flex; gap: 4px; padding: 4px; background: #EFF5FF; border-radius: 999px; } .ds-onglets a { padding: 8px 16px; border-radius: 999px; text-decoration: none; color: #334155; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; transition: background-color 160ms ease, color 160ms ease; } .ds-onglets a[aria-current='page'] { background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(35,80,216,0.3); } .ds-onglets a:not([aria-current='page']):hover { background: #fff; color: #2563EB; } .ds-onglets a:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Bulles du fil",
+      "kind": "custom",
+      "refersTo": "bubble-tutor",
+      "description": "Bulle tuteur blanche bordée à gauche, bulle étudiant bleu très clair à droite (charte D1).",
+      "html": "<div class=\"ds-fil\"><div class=\"ds-bulle ds-etudiant\">Pourquoi le pas doit-il décroître ?</div><div class=\"ds-bulle ds-tuteur\">Pour converger, le pas doit tendre vers 0 sans aller trop vite <span class=\"ds-cit\">Slide 23</span></div></div>",
+      "css": ".ds-fil { display: flex; flex-direction: column; gap: 14px; font-family: Inter, sans-serif; font-size: 16px; line-height: 1.5; color: #0B1A45; } .ds-bulle { padding: 10px 14px; border-radius: 18px; max-width: 85%; } .ds-etudiant { align-self: flex-end; background: #DBEAFE; border-end-end-radius: 6px; } .ds-tuteur { align-self: flex-start; background: #fff; border: 1px solid #E2E8F0; border-end-start-radius: 6px; } .ds-cit { display: inline-flex; padding: 0 8px; border-radius: 6px; background: #FBBF24; color: #0B1A45; font-weight: 600; font-size: 0.85em; line-height: 1.7; }"
+    },
+    {
+      "name": "Choix de quiz",
+      "kind": "custom",
+      "refersTo": "choice",
+      "description": "Option de QCM ; après réponse, vert avec coche ou rouge avec croix, jamais la couleur seule.",
+      "html": "<div class=\"ds-choix\"><button class=\"ds-mauvaise\"><span class=\"ds-lettre\"><svg viewBox=\"0 0 24 24\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg></span>Un seul exemple par itération</button><button class=\"ds-bonne\"><span class=\"ds-lettre\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 12.5l4.5 4.5L19 7.5\"/></svg></span>N mises à jour par époque</button><button><span class=\"ds-lettre\">C</span>Aucune mise à jour</button></div>",
+      "css": ".ds-choix { display: flex; flex-direction: column; gap: 10px; } .ds-choix button { display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 10px 16px; text-align: start; border: 2px solid #E2E8F0; border-radius: 16px; background: #fff; color: #0B1A45; font: 16.5px Inter, sans-serif; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-choix button:hover { border-color: #4C8AFD; background: #EFF5FF; } .ds-choix button:active { transform: scale(0.985); } .ds-choix button:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; } .ds-lettre { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #EFF5FF; color: #2563EB; font-family: Inter, sans-serif; font-weight: 700; font-size: 15px; } .ds-lettre svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; } .ds-choix .ds-bonne { border-color: #15803D; background: #DCFCE7; } .ds-choix .ds-bonne .ds-lettre { background: #15803D; color: #fff; } .ds-choix .ds-mauvaise { border-color: #DC2626; background: #FEE2E2; } .ds-choix .ds-mauvaise .ds-lettre { background: #DC2626; color: #fff; }"
+    },
+    {
+      "name": "Encadré « À retenir »",
+      "kind": "card",
+      "refersTo": "callout-retenir",
+      "description": "Ce qu'il faut retenir, en jaune du pompon.",
+      "html": "<div class=\"ds-retenir\"><span class=\"ds-disque-or\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linejoin=\"round\"><path d=\"M12 3l2.4 5.6 6.1.5-4.6 4 1.4 6-5.3-3.2-5.3 3.2 1.4-6-4.6-4 6.1-.5z\"/></svg></span><div><h3>À retenir</h3><p>Un gros pas par époque, ou N petits pas.</p></div></div>",
+      "css": ".ds-retenir { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 12px; background: #FEF3C7; border: 2px solid #FBBF24; font-family: Inter, sans-serif; } .ds-disque-or { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #FBBF24; color: #0B1A45; } .ds-retenir h3 { margin: 0 0 2px; font-weight: 700; font-size: 14px; color: #78350F; } .ds-retenir p { margin: 0; color: #0B1A45; }"
+    },
+    {
+      "name": "Mascotte",
+      "kind": "custom",
+      "refersTo": "mascotte",
+      "description": "Le visage animé du tuteur ; états : repos, reflechit, contente, oups. Le logo image tient l'en-tête.",
+      "html": "<svg class=\"ds-mascotte\" data-etat=\"contente\" viewBox=\"0 0 100 100\"><g class=\"ds-eclats\"><path d=\"M10 30 L4 26\"/><path d=\"M14 22 L11 15\"/><path d=\"M8 40 L1 40\"/></g><g class=\"ds-tete\"><rect class=\"ds-c\" x=\"12\" y=\"49\" width=\"9\" height=\"17\" rx=\"4.5\" fill=\"#fff\"/><rect class=\"ds-c\" x=\"79\" y=\"49\" width=\"9\" height=\"17\" rx=\"4.5\" fill=\"#fff\"/><rect class=\"ds-c\" x=\"19\" y=\"33\" width=\"62\" height=\"52\" rx=\"25\" fill=\"#fff\"/><rect x=\"27\" y=\"45\" width=\"46\" height=\"26\" rx=\"12\" fill=\"#0B1A45\"/><g fill=\"none\" stroke=\"#4C8AFD\" stroke-width=\"4\" stroke-linecap=\"round\"><path d=\"M36 61 q5.5 -8 11 0\"/><path d=\"M53 61 q5.5 -8 11 0\"/></g><path class=\"ds-c\" d=\"M18 21 L52 9 L86 21 L52 33 Z\" fill=\"#2563EB\"/><path class=\"ds-c\" d=\"M33 27 V35 H71 V27\" fill=\"#1D4ED8\"/><path d=\"M82 22 V37\" stroke=\"#FBBF24\" stroke-width=\"3\" stroke-linecap=\"round\"/><rect x=\"78.5\" y=\"35\" width=\"7\" height=\"10\" rx=\"3\" fill=\"#FBBF24\" stroke=\"#0B1A45\" stroke-width=\"2\"/></g></svg>",
+      "css": ".ds-mascotte { width: 76px; height: 76px; overflow: visible; } .ds-mascotte .ds-c { stroke: #0B1A45; stroke-width: 3; stroke-linejoin: round; } .ds-mascotte .ds-eclats { opacity: 0; } .ds-mascotte .ds-eclats path { stroke: #2563EB; stroke-width: 3; stroke-linecap: round; } .ds-mascotte .ds-tete { transform-box: fill-box; transform-origin: 50% 90%; transition: transform 240ms cubic-bezier(0.23,1,0.32,1); } .ds-mascotte[data-etat='contente'] .ds-tete { transform: translateY(-2px) rotate(-4deg); } .ds-mascotte[data-etat='contente'] .ds-eclats { opacity: 1; } .ds-mascotte:hover .ds-tete { transform: rotate(5deg); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le tuteur a un visage",
+    "overview": "Le système sort du logo officiel (contrainte binding de PRODUCT.md) et de la charte D1 qui en fixe les valeurs : un robot tuteur à toque de diplômé, contours bleu marine, bleu roi pour l'action, jaune du pompon pour ce qui renvoie au cours. L'en-tête porte le logo lui-même (docs/maquettes/img/logo-icone.png, copie de assets/logo-icone.png de la charte), sans recoloration ni ombre. La mascotte SVG redessinée reste le visage animé du tuteur : elle change d'état quand un agent travaille ou quand l'étudiant répond (tête de panneau Explication, fil de questions, réactions du quiz) ; les disques bleu roi deviennent les avatars des agents ; l'éclat devient le retour positif.\n\nLa densité est celle d'un outil d'étude, pas d'une page vitrine : fond gris très clair, panneaux blancs posés dessus, boutons nets à 8px de rayon, rails et pilules pour la navigation, une seule famille (Inter) pour toute l'interface et une vraie serif mathématique pour les formules. Le ton visuel est encourageant et clair, crédible devant un jury d'enseignants. L'interface est trilingue (FR / EN / AR) et passe entièrement en RTL en arabe.\n\nRejet confirmé : le tableau de bord SaaS anonyme à cartes grises. Le monde précédemment tiré (« tableau de l'amphi », sombre) a été remplacé par l'épinglage du logo et ne fait pas partie du système. Deux registres partagent ces valeurs : l'outil (Cours, Quiz, frontend React), clair et calme, et la vitrine (landing), qui a droit aux bandes marine, au dégradé vivant, aux titres d'affiche et au mouvement d'auteur.",
+    "keyCharacteristics": [
+      "Les valeurs de la charte D1 (Both, `docs/charte.md`) reprises telles quelles dans les variables `--mat-*`.",
+      "Le logo officiel en en-tête ; la mascotte SVG à quatre états (sourit, réfléchit, contente, oups) comme visage du tuteur.",
+      "Bleu roi pour l'action, les agents et le segment actif ; marine pour le texte et les contours épais ; jaune du pompon pour les citations `[Slide N]` et « à retenir ».",
+      "Inter auto-hébergée pour toute l'interface (700 titres, 600 boutons, 400 texte) ; STIX Two Text pour les formules.",
+      "Chaque contenu généré porte sa source `[Slide N]` sous forme de pastille jaune cliquable.",
+      "Mouvement court et doux (ease-out), réduit mais pas supprimé sous `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Charter Rule",
+        "body": "Toute couleur vient de `docs/charte.md` (variables `--mat-*`) ou en est une teinte pâle dérivée pour un aplat. Une nouvelle teinte passe par la charte D1, pas par la maquette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pompon Rule",
+        "body": "Le jaune renvoie au cours : citations `[Slide N]`, ce qu'il faut retenir, l'endroit où l'on est. Jamais un bouton d'action, jamais une décoration, jamais de texte blanc dessus.",
+        "section": "colors"
+      },
+      {
+        "name": "The Verdict Colors Rule",
+        "body": "Le vert et le rouge n'apparaissent qu'en réponse à un acte de l'étudiant (réponse au quiz, vérification par le Critic), et toujours avec une icône coche ou croix : jamais la couleur seule, jamais au repos.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Toute l'interface est en Inter (charte D1) ; on hiérarchise par la graisse et la taille. La note « police trop répandue » est acceptée parce que la charte l'impose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Real Math Rule",
+        "body": "Une formule est toujours en STIX Two Text (KaTeX en React), jamais en police d'interface.",
+        "section": "typography"
+      },
+      {
+        "name": "The Blue Shadow Rule",
+        "body": "Les ombres sont teintées de bleu, diffuses et basses. Pas d'ombre grise neutre, pas d'ombre décalée dure, et jamais d'ombre sur le logo (charte).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do prendre toute valeur de couleur, de police et de bouton dans `docs/charte.md` (D1, Both) ; reprendre ses variables `--mat-*` telles quelles.",
+      "Do mettre la mascotte en état « réfléchit » pendant chaque génération d'agent (SSE de l'Explainer et du Q&A) et la ramener au repos à la fin.",
+      "Do rendre chaque `[Slide N]` comme une pastille jaune cliquable (texte marine, coins 6px) qui mène à la slide.",
+      "Do accompagner chaque verdict de quiz d'une icône coche ou croix en plus du vert ou du rouge.",
+      "Do garder le focus clavier visible : contour 2px bleu roi décalé de 2px sur tout élément interactif.",
+      "Do utiliser des propriétés logiques (`inline-start`, `block-end`) et retourner les icônes directionnelles pour que l'arabe passe en RTL sans CSS supplémentaire.",
+      "Do garder l'action principale dans la barre fixe du bas sous 980px et les boutons icône à 44px sur téléphone.",
+      "Do composer les formules en STIX Two Text (KaTeX dans le frontend React) et auto-héberger toutes les polices."
+    ],
+    "donts": [
+      "Don't sortir de la palette de la charte : pas de nouvelle teinte, pas de thème sombre, pas de dégradé décoratif dans l'outil (la landing a ses exceptions, voir « La landing (vitrine) »).",
+      "Don't reprendre dans l'outil les effets de la vitrine (dégradé vivant, bandes marine, bandeau défilant, parallaxe) : l'outil est consulté des dizaines de fois par séance.",
+      "Don't utiliser le jaune pour un bouton d'action ou une décoration, ni mettre du texte blanc sur le jaune ou le bleu clair.",
+      "Don't déformer, recolorer ou ombrer le logo, ni le poser sur un fond foncé.",
+      "Don't construire des écrans en tableau de bord SaaS à cartes grises anonymes ; le tuteur a la mascotte pour visage.",
+      "Don't mettre de vert ou de rouge sur l'interface au repos, ni un verdict sans son icône.",
+      "Don't charger une police depuis un service en ligne (Google Fonts ou autre)."
+    ]
+  }
+}

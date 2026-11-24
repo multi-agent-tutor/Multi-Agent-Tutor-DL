@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Quiz — Multi-Agent Tutor</title>
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="maquettes.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-depot" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+  <symbol id="i-livre" viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></symbol>
+  <symbol id="i-cours" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-quiz" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M6 12.5l4 4L18 8"/></symbol>
+  <symbol id="i-ko" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+  <symbol id="i-droite" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-recommencer" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4h4"/></symbol>
+  <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-cartes" viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></symbol>
+  <symbol id="i-niveau" viewBox="0 0 24 24"><path d="M3 20h5v-5h5v-5h5V5h3"/></symbol>
+</svg>
+
+<header class="barre">
+  <a class="marque" href="accueil/index.html" aria-label="Multi-Agent Tutor, accueil"><img src="img/logo-icone.png" alt="" width="44" height="44"><span class="marque-nom">Multi-Agent <b>Tutor</b></span></a>
+  <div class="cours-actuel">
+    <svg class="icone"><use href="#i-livre"/></svg>
+    <span>Optimisation pour le ML ·</span>
+    <strong>Ch. 3 — Descente de gradient stochastique</strong>
+  </div>
+  <nav class="onglets" aria-label="Sections">
+    <a href="depot.html"><svg class="icone"><use href="#i-depot"/></svg><span data-t="depot">Déposer</span></a>
+    <a href="cours.html"><svg class="icone"><use href="#i-cours"/></svg><span data-t="cours">Cours</span></a>
+    <a href="quiz.html" aria-current="page"><svg class="icone"><use href="#i-quiz"/></svg><span data-t="quiz">Quiz</span></a>
+  </nav>
+  <div class="langues" role="group" aria-label="Langue">
+    <button data-lang="fr" aria-pressed="true">FR</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+    <button data-lang="ar" aria-pressed="false" aria-label="العربية">AR</button>
+  </div>
+</header>
+
+<main class="page-quiz">
+  <div class="entete-quiz">
+    <div class="titre-quiz">
+      <span data-mascotte id="mascotte-quiz"></span>
+      <div>
+        <h1 data-t="titre">Vérifie ce que tu as compris</h1>
+        <p data-t="sous-titre">Chapitre 3 · questions tirées des slides de ton cours</p>
+      </div>
+    </div>
+    <div class="modes" role="group" aria-label="Mode">
+      <button data-mode="qcm" aria-pressed="true" data-t="qcm">QCM</button>
+      <button data-mode="flashcards" aria-pressed="false" data-t="flash">Flashcards</button>
+    </div>
+  </div>
+  <div class="progression-quiz" id="progression">
+    <div class="etapes" id="etapes" aria-hidden="true"></div>
+    <span class="compteur" id="compteur"></span>
+  </div>
+
+  <!-- QCM : une question à la fois, retour immédiat -->
+  <section class="panneau carte-question" id="qcm" aria-live="polite">
+    <h2 id="enonce"></h2>
+    <div class="choix" id="choix"></div>
+    <div class="retour" id="retour"></div>
+    <div class="pied">
+      <div class="infos">
+        <span><span data-t="source">Source</span> : <span id="source"></span></span>
+        <span class="bloom"><svg class="icone"><use href="#i-niveau"/></svg><span id="bloom"></span></span>
+      </div>
+      <button class="bouton principal" id="suivant" disabled><span id="libelle-suivant" data-t="suivante">Question suivante</span><svg class="icone miroir"><use href="#i-droite"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Score -->
+  <section class="panneau score" id="score" aria-live="polite">
+    <span data-mascotte id="mascotte-score"></span>
+    <div class="resultat" id="resultat"></div>
+    <div class="pastilles" id="pastilles" aria-hidden="true"></div>
+    <h2 id="message"></h2>
+    <div class="revoir" id="revoir"></div>
+    <div class="actions" style="justify-content:center;border:0;padding:0">
+      <button class="bouton" id="recommencer"><svg class="icone"><use href="#i-recommencer"/></svg><span data-t="recommencer">Recommencer</span></button>
+      <button class="bouton" id="vers-cartes"><svg class="icone"><use href="#i-cartes"/></svg><span data-t="reviser">Réviser en flashcards</span></button>
+      <button class="bouton principal"><svg class="icone"><use href="#i-export"/></svg><span data-t="anki">Exporter vers Anki</span></button>
+    </div>
+  </section>
+
+  <!-- Flashcards : recto / verso, auto-évaluation (SM-2, A6) -->
+  <section class="flashcards" id="flashcards">
+    <div class="scene">
+      <button class="flashcard" id="carte" aria-pressed="false" aria-label="Retourner la carte">
+        <span class="face recto"><span class="cote" data-t="question">Question</span><span class="contenu" id="recto"></span><span class="indice" data-t="indice">Clique ou appuie sur Espace pour voir la réponse</span></span>
+        <span class="face verso"><span class="cote" data-t="reponse">Réponse</span><span class="contenu" id="verso"></span></span>
+      </button>
+    </div>
+    <div class="evaluation">
+      <button class="bouton"><span data-t="revoir">À revoir</span><small data-t="d1">dans 1 min</small></button>
+      <button class="bouton"><span data-t="difficile">Difficile</span><small data-t="d2">dans 6 min</small></button>
+      <button class="bouton"><span data-t="bien">Bien</span><small data-t="d3">demain</small></button>
+      <button class="bouton principal"><span data-t="facile">Facile</span><small data-t="d4">dans 4 jours</small></button>
+    </div>
+    <p class="compte" id="compte-cartes"></p>
+  </section>
+</main>
+
+<script src="maquettes.js"></script>
+<script>
+  // Données de démonstration au format de l'agent Quiz (A2).
+  const questions = [
+    { enonce: "Qu'est-ce qu'une époque (epoch) ?", bloom: "Mémoriser", slide: 3,
+      choix: ["Une mise à jour des paramètres", "Un passage complet sur les N données", "Le choix du pas ρ", "Le tirage aléatoire d'une donnée"],
+      bonne: 1, explication: "Une itération est une mise à jour des paramètres ; une époque est un passage complet sur les N données." },
+    { enonce: "Pourquoi la descente stochastique à pas constant oscille-t-elle autour du minimiseur X* ?", bloom: "Comprendre", slide: 7,
+      choix: ["Parce que ∇E(X*) ≠ 0", "Parce que les gradients locaux ∇Eᵢ(X*) ne sont pas nuls", "Parce que le pas est trop petit", "Parce que les données sont mélangées"],
+      bonne: 1, explication: "Au minimiseur, le gradient total est nul, mais pas les gradients locaux : chaque pas déplace encore le point." },
+    { enonce: "Avec une descente par lots de taille K = N, on retrouve…", bloom: "Appliquer", slide: 13,
+      choix: ["La descente stochastique", "La recherche linéaire", "La descente de gradient classique", "La méthode de Newton"],
+      bonne: 2, explication: "K = 1 donne la descente stochastique ; K = N, la descente de gradient classique." }
+  ];
+  const cartes = [
+    { recto: "Formule de mise à jour de la descente stochastique", verso: "Xₖ₊₁ = Xₖ − ρ ∇Eᵢ(Xₖ)" },
+    { recto: "Conditions d'un pas décroissant qui converge", verso: "Σ ρₖ = +∞  et  Σ ρₖ² < +∞" },
+    { recto: "Tailles de lot usuelles en apprentissage profond", verso: "32, 64, 128 (batch_size)" }
+  ];
+  const $ = id => document.getElementById(id);
+  const L = k => LIBELLES[LANGUE][k];
+  dessinerMascottes();
+  let i = 0; const resultats = [];
+
+  function etapes() {
+    $("etapes").style.setProperty("--n", questions.length);
+    $("etapes").innerHTML = questions.map((_, n) =>
+      `<span class="${n < resultats.length ? (resultats[n] ? "juste" : "fausse") : n === i ? "courante" : ""}"></span>`).join("");
+    $("compteur").textContent = `${Math.min(i + 1, questions.length)} / ${questions.length}`;
+  }
+  function afficherQuestion() {
+    const q = questions[i];
+    $("enonce").textContent = q.enonce;
+    $("bloom").textContent = q.bloom;
+    $("source").innerHTML = `<a class="source" href="cours.html">Slide ${q.slide}</a>`;
+    $("retour").className = "retour";
+    $("suivant").disabled = true;
+    $("choix").innerHTML = "";
+    q.choix.forEach((texte, n) => {
+      const b = document.createElement("button");
+      b.innerHTML = `<span class="lettre">${"ABCD"[n]}</span><span></span>`;
+      b.lastElementChild.textContent = texte;
+      b.addEventListener("click", () => repondre(n));
+      $("choix").appendChild(b);
+    });
+    etatMascotte($("mascotte-quiz"), "");
+    etapes();
+  }
+  function repondre(n) {
+    const q = questions[i];
+    const boutons = [...$("choix").children];
+    boutons.forEach(b => (b.disabled = true));
+    boutons[q.bonne].classList.add("bonne");
+    // Icône ✓ / ✗ en plus de la couleur (charte D1 : ne pas reposer sur la couleur seule)
+    boutons[q.bonne].querySelector(".lettre").innerHTML = `<svg class="icone" aria-label="Bonne réponse"><use href="#i-ok"/></svg>`;
+    const juste = n === q.bonne;
+    resultats.push(juste);
+    if (!juste) { boutons[n].classList.add("mauvaise"); boutons[n].querySelector(".lettre").innerHTML = `<svg class="icone" aria-label="Mauvaise réponse"><use href="#i-ko"/></svg>`; }
+    // La mascotte réagit : éclats du logo sur une bonne réponse, tête penchée sur une erreur.
+    etatMascotte($("mascotte-quiz"), juste ? "contente" : "oups");
+    $("retour").className = `retour visible ${juste ? "ok" : "ko"}`;
+    $("retour").innerHTML = `<span data-mascotte></span><p><strong>${L(juste ? "exact" : "presque")}</strong> ${q.explication}</p>`;
+    dessinerMascottes($("retour"));
+    etatMascotte($("retour"), juste ? "contente" : "oups");
+    $("suivant").disabled = false;
+    $("libelle-suivant").dataset.t = i === questions.length - 1 ? "voir-score" : "suivante";
+    $("libelle-suivant").textContent = L($("libelle-suivant").dataset.t);
+    $("suivant").focus();
+    etapes();
+  }
+  function score() {
+    const bonnes = resultats.filter(Boolean).length;
+    $("qcm").style.display = "none";
+    $("progression").style.visibility = "hidden";
+    $("score").style.display = "flex";
+    $("resultat").innerHTML = `${bonnes}<small> / ${questions.length}</small>`;
+    $("pastilles").innerHTML = resultats.map((ok, k) =>
+      `<span class="disque ${ok ? "vert" : ""}" style="${ok ? "" : "background:var(--rouge)"};animation-delay:${80 + k * 70}ms"><svg class="icone"><use href="#i-${ok ? "ok" : "ko"}"/></svg></span>`).join("");
+    $("message").dataset.t = bonnes === questions.length ? "tout-acquis" : "a-revoir";
+    $("message").textContent = L($("message").dataset.t);
+    etatMascotte($("mascotte-score"), bonnes === questions.length ? "contente" : "");
+    if (bonnes) etatMascotte($("mascotte-score"), "contente");
+    const fausses = questions.filter((_, n) => !resultats[n]);
+    $("revoir").innerHTML = fausses.map(q => `<div><span>${q.enonce}</span><a class="source" href="cours.html">Slide ${q.slide}</a></div>`).join("");
+  }
+  $("suivant").addEventListener("click", () => { i++; i < questions.length ? afficherQuestion() : score(); });
+  function recommencer() {
+    i = 0; resultats.length = 0;
+    $("score").style.display = "none"; $("qcm").style.display = "flex"; $("progression").style.visibility = "visible";
+    afficherQuestion();
+  }
+  $("recommencer").addEventListener("click", recommencer);
+
+  // Flashcards
+  let c = 0;
+  function carte() {
+    $("carte").setAttribute("aria-pressed", "false");
+    $("recto").textContent = cartes[c].recto;
+    $("verso").textContent = cartes[c].verso;
+    $("compte-cartes").textContent = `${c + 1} / ${cartes.length}`;
+  }
+  $("carte").addEventListener("click", () => $("carte").setAttribute("aria-pressed", $("carte").getAttribute("aria-pressed") !== "true"));
+  document.querySelectorAll(".evaluation button").forEach(b => b.addEventListener("click", () => { c = (c + 1) % cartes.length; carte(); }));
+
+  function mode(m) {
+    const flash = m === "flashcards";
+    document.querySelectorAll(".modes button").forEach(x => x.setAttribute("aria-pressed", x.dataset.mode === m));
+    $("flashcards").style.display = flash ? "flex" : "none";
+    if (flash) { $("qcm").style.display = "none"; $("score").style.display = "none"; $("progression").style.visibility = "hidden"; }
+    else recommencer();
+  }
+  document.querySelectorAll(".modes button").forEach(b => b.addEventListener("click", () => mode(b.dataset.mode)));
+  $("vers-cartes").addEventListener("click", () => mode("flashcards"));
+
+  brancherLangues({
+    fr: { exact: "Exact !", presque: "Pas tout à fait.", "voir-score": "Voir mon score", "tout-acquis": "Tout est acquis sur ce chapitre !", "a-revoir": "Bien joué ! Encore une notion à revoir.", depot: "Déposer", cours: "Cours", quiz: "Quiz", titre: "Vérifie ce que tu as compris", "sous-titre": "Chapitre 3 · questions tirées des slides de ton cours", qcm: "QCM", flash: "Flashcards", source: "Source", suivante: "Question suivante", recommencer: "Recommencer", reviser: "Réviser en flashcards", anki: "Exporter vers Anki", question: "Question", reponse: "Réponse", indice: "Clique ou appuie sur Espace pour voir la réponse", revoir: "À revoir", difficile: "Difficile", bien: "Bien", facile: "Facile", d1: "dans 1 min", d2: "dans 6 min", d3: "demain", d4: "dans 4 jours" },
+    en: { exact: "Correct!", presque: "Not quite.", "voir-score": "See my score", "tout-acquis": "You have mastered this chapter!", "a-revoir": "Well done! One notion left to review.", depot: "Upload", cours: "Course", quiz: "Quiz", titre: "Check what you understood", "sous-titre": "Chapter 3 · questions drawn from your course slides", qcm: "Multiple choice", flash: "Flashcards", source: "Source", suivante: "Next question", recommencer: "Start again", reviser: "Review as flashcards", anki: "Export to Anki", question: "Question", reponse: "Answer", indice: "Click or press Space to see the answer", revoir: "Again", difficile: "Hard", bien: "Good", facile: "Easy", d1: "in 1 min", d2: "in 6 min", d3: "tomorrow", d4: "in 4 days" },
+    ar: { exact: "صحيح!", presque: "ليس تمامًا.", "voir-score": "عرض نتيجتي", "tout-acquis": "أتقنت هذا الفصل!", "a-revoir": "أحسنت! بقيت فكرة واحدة للمراجعة.", depot: "رفع", cours: "الدرس", quiz: "اختبار", titre: "تحقّق مما فهمته", "sous-titre": "الفصل 3 · أسئلة مأخوذة من شرائح درسك", qcm: "اختيار من متعدد", flash: "بطاقات", source: "المصدر", suivante: "السؤال التالي", recommencer: "إعادة", reviser: "راجع بالبطاقات", anki: "تصدير إلى Anki", question: "سؤال", reponse: "الجواب", indice: "انقر أو اضغط المسافة لرؤية الجواب", revoir: "أعد", difficile: "صعب", bien: "جيد", facile: "سهل", d1: "بعد دقيقة", d2: "بعد 6 دقائق", d3: "غدًا", d4: "بعد 4 أيام" }
+  });
+
+  afficherQuestion();
+  carte();
+</script>
+</body>
+</html>

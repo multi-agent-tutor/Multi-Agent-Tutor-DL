@@ -1,0 +1,138 @@
+[
+  {
+    "titre": "Algorithme du gradient stochastique (Wikipédia)",
+    "url": "https://fr.wikipedia.org/wiki/Algorithme_du_gradient_stochastique",
+    "type": "article",
+    "langue": "fr",
+    "concepts": ["gradient stochastique", "SGD", "mini-lot", "taux d'apprentissage", "fonction de coût"],
+    "course_id": "ml_gradient_stochastique_esprit_fr"
+  },
+  {
+    "titre": "Algorithme du gradient (Wikipédia)",
+    "url": "https://fr.wikipedia.org/wiki/Algorithme_du_gradient",
+    "type": "article",
+    "langue": "fr",
+    "concepts": ["descente de gradient", "gradient", "optimisation", "pas de descente", "convergence"],
+    "course_id": "ml_gradient_stochastique_esprit_fr"
+  },
+  {
+    "titre": "Stochastic gradient descent (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/Stochastic_gradient_descent",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["stochastic gradient descent", "SGD", "mini-batch", "momentum", "learning rate", "Adam"],
+    "course_id": "ml_gradient_stochastique_esprit_fr"
+  },
+  {
+    "titre": "Gradient descent, how neural networks learn (3Blue1Brown)",
+    "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w",
+    "type": "video",
+    "langue": "en",
+    "concepts": ["gradient descent", "descente de gradient", "cost function", "fonction de coût", "neural network"],
+    "course_id": "ml_gradient_stochastique_esprit_fr"
+  },
+  {
+    "titre": "An overview of gradient descent optimization algorithms (S. Ruder, arXiv)",
+    "url": "https://arxiv.org/abs/1609.04747",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["SGD", "mini-batch", "momentum", "Adam", "RMSprop", "learning rate", "gradient descent"],
+    "course_id": "ml_gradient_stochastique_esprit_fr"
+  },
+  {
+    "titre": "Kurose & Ross : vidéos de cours Computer Networking",
+    "url": "https://gaia.cs.umass.edu/kurose_ross/lectures.php",
+    "type": "video",
+    "langue": "en",
+    "concepts": ["internet", "network edge", "network core", "packet switching", "protocol layers", "delay"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "Internet protocol suite (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/Internet_protocol_suite",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["TCP/IP", "protocol layers", "application layer", "transport layer", "network layer", "link layer"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "OSI model (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/OSI_model",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["OSI model", "modèle OSI", "protocol layers", "encapsulation"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "Packet switching (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/Packet_switching",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["packet switching", "circuit switching", "store and forward", "network core"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "Commutation de paquets (Wikipédia)",
+    "url": "https://fr.wikipedia.org/wiki/Commutation_de_paquets",
+    "type": "article",
+    "langue": "fr",
+    "concepts": ["commutation de paquets", "commutation de circuits", "packet switching", "réseau"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "Network delay (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/Network_delay",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["delay", "queuing delay", "transmission delay", "propagation delay", "throughput"],
+    "course_id": "reseaux_introduction_kurose_en"
+  },
+  {
+    "titre": "CS231n : Convolutional Neural Networks (Stanford)",
+    "url": "https://cs231n.github.io/convolutional-networks/",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["convolutional neural network", "CNN", "convolution", "filter", "pooling", "stride", "padding"],
+    "course_id": "dl_cnn_ntu_en"
+  },
+  {
+    "titre": "Convolutional neural network (Wikipedia)",
+    "url": "https://en.wikipedia.org/wiki/Convolutional_neural_network",
+    "type": "article",
+    "langue": "en",
+    "concepts": ["convolutional neural network", "CNN", "receptive field", "pooling", "feature map"],
+    "course_id": "dl_cnn_ntu_en"
+  },
+  {
+    "titre": "Réseau neuronal convolutif (Wikipédia)",
+    "url": "https://fr.wikipedia.org/wiki/R%C3%A9seau_neuronal_convolutif",
+    "type": "article",
+    "langue": "fr",
+    "concepts": ["réseau neuronal convolutif", "réseau de neurones convolutif", "CNN", "convolution", "pooling"],
+    "course_id": "dl_cnn_ntu_en"
+  },
+  {
+    "titre": "But what is a convolution? (3Blue1Brown)",
+    "url": "https://www.youtube.com/watch?v=KuXjwB4LzSA",
+    "type": "video",
+    "langue": "en",
+    "concepts": ["convolution", "filter", "kernel", "image processing"],
+    "course_id": "dl_cnn_ntu_en"
+  },
+  {
+    "titre": "But what is a neural network? (3Blue1Brown)",
+    "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+    "type": "video",
+    "langue": "en",
+    "concepts": ["neural network", "réseau de neurones", "neuron", "layer", "deep learning"],
+    "course_id": "dl_cnn_ntu_en"
+  },
+  {
+    "titre": "ML 2021 Spring : vidéos du cours (NTU, Hung-yi Lee)",
+    "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.php",
+    "type": "video",
+    "langue": "en",
+    "concepts": ["CNN", "convolutional neural network", "self-attention", "deep learning", "regression"],
+    "course_id": "dl_cnn_ntu_en"
+  }
+]

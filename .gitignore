@@ -15,3 +15,13 @@ qdrant_storage/
 .ipynb_checkpoints/
 .DS_Store
 Thumbs.db
+
+# --- A0 : modèles LLM locaux (GGUF, poids), trop lourds pour Git ---
+models/
+
+# --- A6 : base SQLite de révision espacée (SRS_DB_PATH) ---
+data/srs.db
+
+# --- A5 : frontend React/Vite (dépendances npm et build) ---
+frontend/node_modules/
+frontend/dist/

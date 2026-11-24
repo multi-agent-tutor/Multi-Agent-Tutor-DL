@@ -135,6 +135,29 @@
       "minimum": 0,
       "title": "Iterations Critic",
       "type": "integer"
+    },
+    "score_fidelite": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Part des affirmations appuyées par le cours (Critic, O3)",
+      "title": "Score Fidelite"
+    },
+    "corrections": {
+      "description": "Affirmations non appuyées renvoyées à l'agent par le Critic (O3) ; vide = réponse acceptée",
+      "items": {
+        "type": "string"
+      },
+      "title": "Corrections",
+      "type": "array"
     }
   },
   "required": [

@@ -62,7 +62,12 @@ Mêmes premières colonnes que `data/corpus_extra/inventaire.csv`, puis des colo
 - `en/dl/dl_introduction_uva_en.pdf` : slides d'Efstratios Gavves, UvA Deep Learning Course, lecture 1 (2019).
   Source : https://uvadlc.github.io, licence Apache-2.0.
 
-## Répartition du corpus d'Ons (2026-11-17)
+## Répartition du corpus (Ons + Both, 2026-11-19)
+
+**Total : 47 cours** (38 d'Ons + 9 de Both), 32 PDF et 15 PPTX, tous versionnés dans Git.
+Noyaux de test : `noyau_ons.json` (10 cours) et `noyau_both.json` (6 cours).
+
+### Corpus d'Ons
 
 38 cours (25 PDF, 13 PPTX), tous versionnés dans Git. 4 ont une licence explicite (voir Crédits),
 6 sont des supports internes d'Esprit, les autres ont une licence inconnue (source dans l'inventaire).
@@ -77,7 +82,22 @@ Les PPTX de NTU (Hung-yi Lee) contiennent parfois quelques mots en chinois ; ils
 Détail (titre, source, licence, nombre de slides) : `inventaire_ons.csv`.
 
 Le chapitre 4 d'Optimisation pour le ML (Esprit, recherche linéaire) a été retiré du corpus d'Ons :
-il est déjà collecté par Both (`optimisation_recherche_lineaire_ch4_fr.pdf`).
+il est déjà collecté par Both (`fr/ml/ml_recherche_lineaire_esprit_fr.pdf`).
+
+### Corpus de Both
+
+9 cours (7 PDF, 2 PPTX), riches en texte, dont **2 PDF scannés** sans couche de texte pour tester l'OCR
+(`en/maths/maths_jacobien_scan_uiowa_en.pdf`, `en/maths/maths_matrices_scan_uiowa_en.pdf`).
+`en/ml/ml_introduction_mit_en.pdf` a un texte illisible à l'extraction (encodage de police) : bon cas de test pour l'OCR / le VLM.
+
+| Langue | cloud | maths | ml | reseaux | bd | Total |
+|---|---|---|---|---|---|---|
+| fr | 0 | 0 | 1 | 1 | 1 | 3 |
+| en | 2 | 2 | 2 | 0 | 0 | 6 |
+| **Total** | 2 | 2 | 3 | 1 | 1 | **9** |
+
+Détail (titre, source, licence, nombre de slides, remarques) : `inventaire_both.csv`.
+Noyau de Both (`noyau_both.json`) : 6 cours ; les 2 scans (8 pages) et `reseaux_introduction_grenoble_fr` (64 slides) restent en réserve.
 
 ## Noyau de test (C1)
 

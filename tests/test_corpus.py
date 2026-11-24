@@ -45,8 +45,9 @@ def test_course_ids_uniques() -> None:
     assert not doublons, f"course_id en double : {doublons}"
 
 
-def test_noyau_ons() -> None:
-    noyau = json.loads((CORPUS / "noyau_ons.json").read_text(encoding="utf-8"))["cours"]
+@pytest.mark.parametrize("nom", ["noyau_ons.json", "noyau_both.json"])
+def test_noyau(nom: str) -> None:
+    noyau = json.loads((CORPUS / nom).read_text(encoding="utf-8"))["cours"]
     inventaire = {x["fichier"]: x for x in _lignes()}
     assert 5 <= len(noyau) <= 10
     for cours in noyau:

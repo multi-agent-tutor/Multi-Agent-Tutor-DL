@@ -53,7 +53,8 @@ Contrôles : `nombre_slides == len(slides)`, slides numérotées 1..n sans trou,
 
 - `TutorState` (O1) : `course_id`, `slide_courante`, `niveau` (`debutant`|`intermediaire`|`avance`),
   `langue_reponse`, `historique` (liste de `Message`), `question`,
-  `intention` (`expliquer`|`question`|`quiz`|`ressources`), `reponse`, `sources`, `iterations_critic` (≤ 2).
+  `intention` (`expliquer`|`question`|`quiz`|`ressources`), `reponse`, `sources`, `iterations_critic` (≤ 2),
+  `score_fidelite` (0..1, Critic O3) et `corrections` (affirmations non appuyées à reprendre ; vide = acceptée).
 - `Source` : `course_id`, `numero`, `extrait` — affichée « [Slide N] ».
 - `AgentResponse` : `agent`, `reponse`, `sources`, `score_fidelite` (rempli par le Critic).
 

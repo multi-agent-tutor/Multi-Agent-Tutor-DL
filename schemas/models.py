@@ -160,6 +160,13 @@ class TutorState(_Base):
     reponse: str = ""
     sources: list[Source] = Field(default_factory=list)
     iterations_critic: int = Field(default=0, ge=0, le=2)
+    score_fidelite: float | None = Field(
+        default=None, ge=0, le=1, description="Part des affirmations appuyées par le cours (Critic, O3)"
+    )
+    corrections: list[str] = Field(
+        default_factory=list,
+        description="Affirmations non appuyées renvoyées à l'agent par le Critic (O3) ; vide = réponse acceptée",
+    )
 
 
 class AgentResponse(_Base):

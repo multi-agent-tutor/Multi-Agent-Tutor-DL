@@ -29,3 +29,24 @@ Avancement :
 - Les questions « figure » s'appuient sur le texte des slides : à vérifier sur les images lors de la relecture.
 - Pour les cours EN, la réponse attendue hors cours reste la phrase de refus commune (en français).
 - **Both** : ~60 questions sur son noyau, à venir.
+
+## B4 — Benchmark avant / après (`run_eval.py`, `metriques.py`)
+
+Compare deux versions de l'agent Q&R sur le jeu C2 :
+
+- **avant** : recherche dense seule (bge-m3), sans reranker, sans Critic ;
+- **après** : hybride (bge-m3 + BM25, RRF) + reranker bge-reranker-v2-m3 + agent Q&R (B3) + Critic (O3).
+
+Métriques (définitions RAGAS, calculées en local car la bibliothèque RAGAS appelle une API par défaut, règle v2) :
+context precision (slides de référence de C2, sans LLM), faithfulness (juge = LLM local, procédure du Critic),
+answer relevancy (questions générées depuis la réponse + cosinus bge-m3), refus correct / faux refus, latence.
+
+```bash
+python -m eval.run_eval --factice --limite 8   # test de bout en bout sans modèle
+python -m eval.run_eval --limite 24            # échantillon : 6 questions par type, 16 cours
+python -m eval.run_eval                        # les 160 questions (plusieurs heures sur CPU)
+python -m eval.run_eval --juge lexical --sans-questions-generees   # plus rapide, sans juge LLM
+```
+
+Prérequis : cours ingérés par H1 dans `data/processed/<course_id>/course.json`.
+Sorties : `eval/results.md` (tableaux), `eval/results.svg` (graphique), `eval/results_details.jsonl` (détail par question).
