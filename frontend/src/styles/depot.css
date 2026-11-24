@@ -1,0 +1,104 @@
+/* A5 — Page Dépôt : styles de la maquette D2 (docs/maquettes/depot.html, bloc <style>), registre « outil »
+   de DESIGN.md, sous .page-depot pour ne pas toucher aux autres pages. Écarts avec la maquette :
+   .erreur → .erreur-depot et .cote → .cote-depot (noms déjà pris dans app.css et maquettes.css),
+   cours récents en <button> (ils rouvrent un cours de l'API), barre de progression de l'envoi. */
+
+.page-depot { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 28px; max-width: 1180px; margin: 0 auto; padding: 36px 28px 56px; }
+.page-depot .entete-depot { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.page-depot .entete-depot .mascotte { width: 72px; height: 72px; }
+.page-depot .entete-depot h1 { font-size: clamp(26px, 3vw, 34px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 6px; }
+.page-depot .entete-depot p { margin: 0; color: var(--gris); max-width: 52ch; }
+
+.page-depot .zone { position: relative; display: grid; justify-items: center; gap: 12px; padding: 44px 24px; text-align: center; cursor: pointer;
+  border: 2px dashed var(--filet-fort); border-radius: 18px; background: var(--surface);
+  transition: border-color 160ms ease, background-color 160ms ease, transform 200ms var(--ease-out); }
+.page-depot .zone input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.page-depot .zone:focus-within { outline: 2px solid var(--bleu); outline-offset: 2px; }
+.page-depot .zone .disque { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; background: var(--bleu-ciel); color: var(--bleu);
+  transition: transform 240ms var(--ease-out), background-color 160ms ease, color 160ms ease; }
+.page-depot .zone .disque svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.page-depot .zone strong { font-size: 18px; }
+.page-depot .zone .lien-choisir { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px; }
+.page-depot .zone small { color: var(--gris); font-size: 13.5px; }
+.page-depot .zone.survol { border-color: var(--bleu); background: var(--bleu-ciel); transform: scale(1.01); }
+.page-depot .zone.survol .disque { background: var(--bleu); color: #fff; transform: translateY(-4px); }
+@media (hover: hover) and (pointer: fine) {
+  .page-depot .zone:hover { border-color: var(--bleu-clair); }
+  .page-depot .zone:hover .disque { transform: translateY(-3px); }
+}
+.page-depot .zone[hidden] { display: none; }
+
+.page-depot .erreur-depot { display: flex; gap: 10px; align-items: center; margin: 12px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--rouge-doux);
+  color: #7F1D1D; font-size: 14.5px; }
+.page-depot .erreur-depot svg { flex: none; width: 18px; height: 18px; stroke: var(--rouge); stroke-width: 2.2; }
+
+.page-depot .fichier-choisi { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 16px 18px; margin-top: 12px; }
+.page-depot .badge-type { display: grid; place-items: center; width: 48px; height: 56px; border-radius: 10px; background: var(--bleu); color: #fff; font-weight: 700; font-size: 12.5px; letter-spacing: .02em; }
+.page-depot .badge-type.pdf { background: var(--marine); }
+.page-depot .fichier-choisi .nom { font-weight: 600; overflow-wrap: anywhere; }
+.page-depot .fichier-choisi .meta { color: var(--gris); font-size: 13.5px; }
+
+.page-depot .options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+.page-depot .option { display: grid; gap: 6px; }
+.page-depot .option > span { font-size: 13px; font-weight: 600; color: var(--gris); }
+.page-depot .option select { height: 42px; padding: 0 12px; border: 1px solid var(--filet-fort); border-radius: 8px; background: var(--surface);
+  font: 500 15px var(--texte); color: var(--marine); }
+.page-depot .actions-depot { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+.page-depot .etapes-analyse { margin: 18px 0 0; padding: 18px 20px; list-style: none; display: grid; gap: 12px; }
+.page-depot .etapes-analyse li { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: center; color: var(--gris); transition: color 200ms ease; }
+.page-depot .etapes-analyse .pastille { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--filet-fort); background: var(--surface); }
+.page-depot .etapes-analyse .pastille svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.page-depot .etapes-analyse li.en-cours { color: var(--marine); font-weight: 600; }
+.page-depot .etapes-analyse li.en-cours .pastille { border-color: var(--bleu); border-inline-end-color: transparent; animation: tourne-depot 700ms linear infinite; }
+.page-depot .etapes-analyse li.fait { color: var(--marine); }
+.page-depot .etapes-analyse li.fait .pastille { border-color: var(--vert); background: var(--vert); }
+.page-depot .etapes-analyse li.fait .pastille svg { opacity: 1; }
+.page-depot .etapes-analyse .agent { font-size: 12.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--bleu-ciel); color: var(--bleu-fonce); }
+.page-depot .etapes-analyse li.note-traitement { display: block; padding-inline-start: 38px; font-size: 13px; font-weight: 400; color: var(--gris); }
+@keyframes tourne-depot { to { transform: rotate(1turn); } }
+
+/* Progression de l'envoi (absente de la maquette, qui simule l'analyse) */
+.page-depot .progression-envoi { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-weight: 400; }
+.page-depot .barre-envoi { flex: 1; height: 6px; border-radius: 999px; background: var(--filet); overflow: hidden; }
+.page-depot .barre-envoi i { display: block; height: 100%; border-radius: inherit; background: var(--bleu); transform-origin: left; transition: transform 160ms linear; }
+[dir="rtl"] .page-depot .barre-envoi i { transform-origin: right; }
+.page-depot .progression-envoi b { font-size: 13px; color: var(--marine); min-width: 4ch; text-align: end; }
+
+.page-depot .pret { margin-top: 18px; padding: 22px; display: grid; gap: 14px; border-color: var(--vert); }
+.page-depot .pret .titre-pret { display: flex; align-items: center; gap: 12px; }
+.page-depot .pret .titre-pret .mascotte { width: 52px; height: 52px; }
+.page-depot .pret h2 { margin: 0; font-size: 21px; }
+.page-depot .pret p { margin: 0; color: var(--gris); }
+.page-depot .pret .verifie { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 600; color: var(--vert); }
+.page-depot .pret .verifie svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.page-depot .pret .actions-depot { margin-top: 0; }
+
+.page-depot .cote-depot { display: grid; gap: 18px; align-content: start; }
+.page-depot .cote-depot .panneau { padding: 20px; }
+.page-depot .cote-depot h2 { font-size: 16px; margin: 0 0 12px; }
+.page-depot .liste-garanties { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; font-size: 14.5px; }
+.page-depot .liste-garanties li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+.page-depot .liste-garanties svg { width: 20px; height: 20px; stroke: var(--bleu); stroke-width: 1.8; }
+.page-depot .recents { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.page-depot .recents button { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; width: 100%; padding: 10px; border: 0; border-radius: 10px;
+  background: none; text-align: start; font: inherit; color: var(--marine); cursor: pointer; transition: background-color 160ms ease; }
+.page-depot .recents button:hover:not(:disabled) { background: var(--bleu-ciel); }
+.page-depot .recents button:disabled { cursor: progress; opacity: .6; }
+.page-depot .recents .badge-type { width: 36px; height: 42px; font-size: 11px; }
+.page-depot .recents b { display: block; font-size: 14.5px; }
+.page-depot .recents span span { font-size: 13px; color: var(--gris); }
+.page-depot .recents-vide { margin: 0; font-size: 14px; color: var(--gris); }
+
+@media (max-width: 980px) { .page-depot { grid-template-columns: 1fr; padding: 22px 16px 96px; } }
+@media (max-width: 640px) {
+  .page-depot .options { grid-template-columns: 1fr; }
+  .page-depot .zone { padding: 32px 16px; }
+  .page-depot .entete-depot .mascotte { width: 56px; height: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-depot .zone, .page-depot .zone .disque { transition-property: border-color, background-color, color; }
+  .page-depot .zone.survol, .page-depot .zone.survol .disque { transform: none; }
+  .page-depot .etapes-analyse li.en-cours .pastille { animation: none; border-inline-end-color: var(--bleu); }
+  .page-depot .barre-envoi i { transition: none; }
+}

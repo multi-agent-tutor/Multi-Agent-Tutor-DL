@@ -17,7 +17,10 @@ const SYMBOLES: Record<string, string> = {
   export: '<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>',
   cartes: '<rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>',
   niveau: '<path d="M3 20h5v-5h5v-5h5V5h3"/>',
-  importer: '<path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 21h14"/>',
+  depot: '<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>',
+  importer: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+  alerte: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16h.01"/>',
+  ecran: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
   lien: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
 };
 

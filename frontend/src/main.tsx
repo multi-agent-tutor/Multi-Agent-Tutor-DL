@@ -5,6 +5,8 @@ import App from "./App";
 import { FournisseurLangue } from "./i18n";
 import "./styles/maquettes.css";
 import "./styles/app.css";
+import "./styles/depot.css";
+import "./styles/accueil.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

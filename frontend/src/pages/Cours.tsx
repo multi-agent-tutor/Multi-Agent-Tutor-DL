@@ -1,6 +1,6 @@
 // Page Cours (maquette D2 cours.html) : slide à gauche, explication et questions à droite.
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type RefObject } from "react";
-import { api, ErreurApi, estAnnulation, lireReponseAgent } from "../api";
+import { api, ErreurApi, estAnnulation, lireReponseAgent, urlImageSlide } from "../api";
 import { Attente, Erreur } from "../components/Attente";
 import { Icone } from "../components/Icones";
 import { Mascotte, type EtatMascotte } from "../components/Mascotte";
@@ -85,6 +85,9 @@ export function PageCours({ cours, numero, surNumero, niveau, surNiveau, maitris
 
 // ---------------------------------------------------------------- slide
 
+/** Cours dont le rendu PNG n'a pas pu être chargé : on n'essaie plus pour les autres slides (session). */
+const imagesIndisponibles = new Set<string>();
+
 function VueSlide({
   slide,
   total,
@@ -98,6 +101,31 @@ function VueSlide({
 }) {
   const { t } = useLangue();
   const titre = slide.titre || `${t("slide")} ${slide.numero}`;
+  // Rendu PNG de la slide (ingestion H1) s'il existe et que l'API le sert ; sinon, affichage texte.
+  const [imageEchouee, setImageEchouee] = useState(false);
+  useEffect(() => setImageEchouee(false), [slide.id]);
+  const image =
+    slide.image_rendu && !imageEchouee && !imagesIndisponibles.has(slide.course_id)
+      ? urlImageSlide(slide.course_id, slide.image_rendu)
+      : null;
+
+  const contenuTexte = (
+    <>
+      <h2>{titre}</h2>
+      <TexteSlide texte={slide.texte} surCitation={surCitation} />
+      {slide.formules_latex.map((f, i) => (
+        <p key={i} className="formule-slide">
+          <Formule latex={f} />
+        </p>
+      ))}
+      {slide.description_figures.map((d, i) => (
+        <p key={i} className="figure-slide">
+          <b>{t("figure")} :</b> {d}
+        </p>
+      ))}
+    </>
+  );
+
   return (
     <>
       <div className="titre-slide">
@@ -107,20 +135,27 @@ function VueSlide({
         </span>
       </div>
       <div className="cadre-slide" ref={cadre}>
-        <section key={slide.numero} className="slide" dir="auto" aria-live="polite" aria-label={`${t("slide")} ${slide.numero} : ${titre}`}>
-          <h2>{titre}</h2>
-          <TexteSlide texte={slide.texte} surCitation={surCitation} />
-          {slide.formules_latex.map((f, i) => (
-            <p key={i} className="formule-slide">
-              <Formule latex={f} />
-            </p>
-          ))}
-          {slide.description_figures.map((d, i) => (
-            <p key={i} className="figure-slide">
-              <b>{t("figure")} :</b> {d}
-            </p>
-          ))}
-        </section>
+        {image ? (
+          <section key={`${slide.numero}-image`} className="slide slide-image" aria-live="polite" aria-label={`${t("slide")} ${slide.numero} : ${titre}`}>
+            <img
+              src={image}
+              alt={t("image-slide", { n: slide.numero })}
+              decoding="async"
+              onError={() => {
+                imagesIndisponibles.add(slide.course_id);
+                setImageEchouee(true);
+              }}
+            />
+            {/* Le texte reste lisible par les lecteurs d'écran et la recherche dans la page. */}
+            <div className="sr-only" dir="auto">
+              {contenuTexte}
+            </div>
+          </section>
+        ) : (
+          <section key={slide.numero} className="slide" dir="auto" aria-live="polite" aria-label={`${t("slide")} ${slide.numero} : ${titre}`}>
+            {contenuTexte}
+          </section>
+        )}
       </div>
     </>
   );

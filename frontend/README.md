@@ -42,11 +42,36 @@ application l'occupe déjà, Vite s'arrête au lieu de prendre un autre port : l
 
 `.env` est ignoré par Git (règle racine) : `.env.example` est le modèle versionné.
 
-## Pages et routes utilisées
+## Pages et navigation
+
+Navigation par le hash de l'URL (le bouton Précédent du navigateur fonctionne) :
+**Accueil** `#accueil` (ou vide) → **Dépôt** `#depot` → **Cours** `#cours` → **Quiz** `#quiz` / `#flashcards`.
+
+- **Accueil** (landing, maquette `docs/maquettes/accueil/`, registre « vitrine » de `DESIGN.md`) : sa propre barre
+  flottante, dégradé WebGL vivant (`src/pages/accueil/degrade.ts`, port de `gradient.js`, sans bibliothèque), démos
+  jouables figées (tuteur, routeur d'agents, parcours, QCM), aucun appel à l'API sauf « Essayer la démo » qui ouvre
+  le cours `VITE_COURS_PAR_DEFAUT`. Sous `prefers-reduced-motion`, tout reste à sa place finale et le dégradé devient
+  une image fixe. Les ancres de section (`#essai`, `#agents`…) restent sur l'accueil.
+- **Dépôt** (maquette `depot.html`) : glisser-déposer ou bouton, contrôle PPTX/PDF et 50 Mo, `POST /upload` en
+  XMLHttpRequest pour suivre l'envoi (pourcentage), puis traitement (étapes Ingestion / OCR / VLM / RAG
+  *indicatives* : l'API ne renvoie pas d'avancement), erreur avec « Réessayer », annulation, panneau « cours prêt »
+  qui ouvre la page Cours ou Quiz. « Cours déjà déposés » : les derniers cours ouverts (`localStorage`,
+  `mat-cours-recents`), rouverts par `GET /course/{id}`.
+- **Cours** et **Quiz** : barre de l'outil avec onglets Déposer / Cours / Quiz, logo vers l'accueil.
+
+### Landing : styles
+
+`src/styles/accueil.css` est la copie de `docs/maquettes/accueil/accueil.css` dont toutes les classes portent le
+préfixe `v-` (la maquette réutilise `.bouton`, `.choix`, `.niveaux`, `.flashcard`… avec un autre sens que
+`maquettes.css`). Après une nouvelle maquette : `python frontend/scripts/scoper_accueil.py
+docs/maquettes/accueil/accueil.css <fichier>` puis remplacer le début de `accueil.css` en gardant le bloc final
+« ajouts A5 » (langue, RTL). Les textes FR / EN / AR de la landing sont dans `src/pages/accueil/textes.ts`.
+
+## Routes de l'API utilisées
 
 | Page | Zone | Route |
 |---|---|---|
-| Barre du haut | import d'un support PDF/PPTX | `POST /upload` |
+| Dépôt | envoi d'un support PDF/PPTX (champ `fichier`, et `langue` si choisie) | `POST /upload` |
 | Cours | slide à gauche (titre, texte, formules KaTeX, figures), navigation, bande de maîtrise | `GET /course/{id}` |
 | Cours | explication à 3 niveaux (débutant / intermédiaire / avancé) | `GET /slide/{id}/explain?niveau=` |
 | Cours | ressources de la slide (titre, type, justification, lien) | `GET /resources?slide_id=&niveau=&langue=` |
@@ -56,12 +81,16 @@ application l'occupe déjà, Vite s'arrête au lieu de prendre un autre port : l
 | Quiz | notation SM-2 de 0 à 5 | `POST /flashcards/{id}/review` |
 | Quiz | export Anki (.apkg) | `GET /flashcards/export` |
 
-- **Langue** : FR / EN / AR dans la barre du haut ; en arabe, la page passe en RTL (`dir="rtl"`). La langue est
+- **Langue** : FR / EN / AR dans la barre du haut (et dans la barre de la landing) ; en arabe, la page passe en RTL (`dir="rtl"`). La langue est
   envoyée à `/ask`, `/quiz`, `/flashcards` et `/resources`.
 - **Citations** : `[Slide N]`, `[Slides 3, 5]` et `[Slide 3-5]` deviennent des pastilles jaunes cliquables qui
   amènent à la slide (depuis le quiz aussi). Les sources renvoyées mais non citées dans le texte sont ajoutées en fin
   de réponse. Une réponse du Q&A sans aucune source est affichée comme un refus honnête (bulle en pointillés).
-- **Formules** : `$…$`, `$$…$$`, `\(…\)`, `\[…\]` dans les réponses, et `Slide.formules_latex` sur la slide.
+- **Formules** : `$…$`, `$$…$$`, `\(…\)`, `\[…\]` dans les réponses, et `Slide.formules_latex` sur la slide ;
+  toujours rendues par KaTeX (installé par npm), y compris dans les démos de la landing.
+- **Image de slide** : si `Slide.image_rendu` est renseigné, la page Cours charge
+  `GET {VITE_API_URL}/course/{course_id}/{image_rendu}` (`urlImageSlide`, `src/api.ts`) ; si l'image échoue, la slide
+  revient à l'affichage texte (et on ne réessaie plus pour ce cours pendant la session).
 - **Utilisateur SRS** : identifiant gardé dans `localStorage` (`mat-user`, `etudiant` par défaut).
 - **Maîtrise** (bande des slides) : *vue* = slide affichée, *comprise* = explication reçue, *testée* = question de
   quiz répondue. Gardée dans `localStorage`, par cours.
@@ -105,15 +134,20 @@ frontend/
     ├── types.ts         miroir TypeScript de schemas/models.py et api/models.py
     ├── i18n.tsx         libellés FR / EN / AR, bascule RTL
     ├── maitrise.ts      état vue / comprise / testée des slides
+    ├── recents.ts       cours déjà déposés (page Dépôt)
     ├── components/      barre du haut, mascotte, icônes, texte riche (KaTeX + citations), attente
-    ├── pages/           Cours, Quiz, Flashcards
-    └── styles/          maquettes.css (copie de la maquette D2) + app.css (états réels de l'API)
+    ├── pages/           Dépôt, Cours, Quiz, Flashcards ; accueil/ (landing, dégradé WebGL, démos, textes)
+    └── styles/          maquettes.css (copie de la maquette D2), app.css (états réels de l'API),
+                         depot.css (maquette depot.html), accueil.css (landing, classes v-*)
+scripts/scoper_accueil.py  régénère accueil.css depuis la maquette
 ```
 
 `types.ts` est maintenu à la main : toute évolution de `schemas/models.py` ou `api/models.py` doit y être reportée.
 
 ## Limites connues
 
-- Le rendu PNG des slides (`Slide.image_rendu`) n'est pas encore servi par l'API : la slide est affichée à partir de
-  son texte, de ses formules et de la description de ses figures.
+- Le rendu PNG des slides (`Slide.image_rendu`) n'est pas encore servi par l'API (aucune route ni fichiers statiques
+  dans `api/main.py`) : la slide est affichée à partir de son texte, de ses formules et de la description de ses
+  figures. Il suffira d'ajouter côté API `GET /course/{course_id}/{chemin}` servant `data/processed/<course_id>/`.
+- `POST /upload` renvoie encore le cours d'exemple (ingestion non branchée) et ignore le champ `langue`.
 - « Écouter » (lecture audio, A7) est affiché mais désactivé.

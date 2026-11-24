@@ -149,10 +149,55 @@ async function reveler(texte: string, surTexte: (t: string) => void, signal?: Ab
 export const api = {
   cours: (courseId: string) => json<Course>(`/course/${encodeURIComponent(courseId)}`),
 
-  televerser(fichier: File, signal?: AbortSignal) {
-    const donnees = new FormData();
-    donnees.append("fichier", fichier);
-    return json<Course>("/upload", { method: "POST", body: donnees, signal });
+  /**
+   * POST /upload avec suivi : `surEnvoi(fraction)` pendant l'envoi du fichier (0 à 1), puis
+   * `surTraitement()` quand le fichier est reçu et que l'API l'analyse (aucune progression côté
+   * serveur : la réponse arrive d'un bloc). XMLHttpRequest, car fetch ne donne pas la progression d'envoi.
+   */
+  televerser(
+    fichier: File,
+    { langue, surEnvoi, surTraitement, signal }: {
+      langue?: string;
+      surEnvoi?: (fraction: number) => void;
+      surTraitement?: () => void;
+      signal?: AbortSignal;
+    } = {},
+  ): Promise<Course> {
+    return new Promise((resoudre, rejeter) => {
+      const donnees = new FormData();
+      donnees.append("fichier", fichier);
+      if (langue) donnees.append("langue", langue); // ignoré par l'API tant que l'ingestion n'est pas branchée
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${API_URL}/upload`);
+      xhr.responseType = "text";
+      xhr.upload.onprogress = (e) => e.lengthComputable && surEnvoi?.(e.loaded / e.total);
+      xhr.upload.onload = () => {
+        surEnvoi?.(1);
+        surTraitement?.();
+      };
+      xhr.onload = () => {
+        let corps: unknown = null;
+        try {
+          corps = JSON.parse(xhr.responseText);
+        } catch {
+          /* corps non JSON */
+        }
+        if (xhr.status >= 200 && xhr.status < 300 && corps) return resoudre(corps as Course);
+        const detail = (corps as { detail?: unknown } | null)?.detail;
+        const message =
+          typeof detail === "string"
+            ? detail
+            : Array.isArray(detail)
+              ? detail.map((d: { msg?: string }) => d.msg).join(" ; ")
+              : `${xhr.status} ${xhr.statusText}`;
+        rejeter(new ErreurApi(message, xhr.status));
+      };
+      xhr.onerror = () => rejeter(new ErreurApi(`API injoignable (${API_URL}). Lance « uvicorn api.main:app --reload ».`, 0));
+      xhr.onabort = () => rejeter(new DOMException("Annulé", "AbortError"));
+      if (signal?.aborted) return rejeter(new DOMException("Annulé", "AbortError"));
+      signal?.addEventListener("abort", () => xhr.abort(), { once: true });
+      xhr.send(donnees);
+    });
   },
 
   /** Réponse brute de /slide/{id}/explain, à passer à `lireReponseAgent`. */
@@ -194,6 +239,16 @@ export const api = {
   ressources: (courseId: string, numero: number, niveau: Niveau, langue: LangueUI, signal?: AbortSignal) =>
     json<Ressource[]>(`/resources?${qs({ slide_id: slideId(courseId, numero), niveau, langue })}`, { signal }),
 };
+
+/**
+ * URL du rendu PNG d'une slide (`Slide.image_rendu`, chemin relatif à data/processed/<course_id>/,
+ * produit par l'ingestion H1). Route attendue côté API : GET /course/{course_id}/{chemin}.
+ * Tant que l'API ne la sert pas, l'image échoue et la page Cours garde l'affichage texte.
+ */
+export function urlImageSlide(courseId: string, imageRendu: string): string {
+  const chemin = imageRendu.replace(/^\/+/, "").split("/").map(encodeURIComponent).join("/");
+  return `${API_URL}/course/${encodeURIComponent(courseId)}/${chemin}`;
+}
 
 /** Proposer un fichier au téléchargement (export Anki). */
 export function telecharger(blob: Blob, nom: string) {

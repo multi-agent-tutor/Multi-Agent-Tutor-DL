@@ -1,5 +1,5 @@
 /* A5 — Compléments aux maquettes D2 (maquettes.css, copié tel quel) pour les états réels de l'API :
-   attente du LLM local, erreurs, ressources, accueil, notation SM-2 sur 6 niveaux.
+   attente du LLM local, erreurs, ressources, image de slide, page sans cours, notation SM-2 sur 6 niveaux.
    Uniquement des jetons de la charte D1 (variables --mat-* et teintes dérivées de maquettes.css). */
 
 /* ---------- Slide : contenu réel, de longueur variable ---------- */
@@ -43,9 +43,10 @@
 .bandeau-erreur .erreur { flex: 1; }
 .note-ok { margin: 0; color: var(--vert); font-weight: 700; font-size: 14.5px; }
 
-/* ---------- Barre du haut : import ---------- */
-.importer { min-height: 36px; white-space: nowrap; }
-@media (max-width: 980px) { .importer span { display: none; } .importer { padding-inline: 10px; } }
+/* ---------- Slide : rendu PNG de l'ingestion (Slide.image_rendu), sinon le texte ci-dessus ---------- */
+.slide.slide-image { padding: 0; display: grid; place-items: center; background: var(--surface); }
+.slide.slide-image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+@media (max-width: 980px) { .slide.slide-image { aspect-ratio: 16 / 9; } }
 
 /* ---------- Explication ---------- */
 .bloc ul { margin: 4px 0 0; padding-inline-start: 22px; color: var(--marine-2); }
@@ -91,11 +92,12 @@
 .evaluation-sm2 .note { font-size: 13px; opacity: 0.75; }
 @media (max-width: 980px) { .evaluation.evaluation-sm2 { grid-template-columns: repeat(3, 1fr); } }
 
-/* ---------- Accueil (aucun cours) ---------- */
-.accueil {
+/* ---------- Cours ou Quiz sans cours ouvert ---------- */
+.sans-cours {
   max-width: 640px; margin-inline: auto; padding: 48px 24px;
   display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;
 }
-.accueil img { max-width: 100%; height: auto; }
-.accueil h1 { font-size: 28px; }
-.accueil p { margin: 0; color: var(--marine-2); max-width: 52ch; }
+.sans-cours .mascotte { width: 76px; height: 76px; }
+.sans-cours h1 { font-size: 27px; }
+.sans-cours p { margin: 0; color: var(--marine-2); max-width: 52ch; }
+.sans-cours .actions { justify-content: center; border: 0; padding: 0; }
