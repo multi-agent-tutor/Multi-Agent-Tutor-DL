@@ -15,6 +15,7 @@ from schemas import Course, Slide, TutorState
 from schemas.models import slide_id
 
 COURSE_ID = "ml_regression_lineaire_fr"  # cours d'exemple (2 slides)
+_PREREQUIS_H3_ORIGINAL = ex._prerequis_h3  # la fixture le remplace : garder la vraie recherche de H3
 TEST_ID = "dl_test_explainer"
 
 
@@ -128,6 +129,22 @@ def test_prerequis_utilise_h3_et_se_replie_en_cas_d_erreur() -> None:
         raise RuntimeError("H3 pas prêt")
 
     assert ex.prerequis(COURS, 2, _casse) == ["perceptron"]
+
+
+def test_prerequis_h3_ids_de_slides_rendus_lisibles() -> None:
+    ids = lambda _: [f"{TEST_ID}__s001", f"{TEST_ID}__s002", f"{TEST_ID}__s001", f"{TEST_ID}__s042"]  # noqa: E731
+    assert ex.prerequis(COURS, 3, ids) == ["Slide 1 : Le perceptron", "Slide 2 : Fonctions d'activation"]
+
+
+def test_prerequis_h3_vide_repli_sur_les_concepts() -> None:
+    # Carte du cours pas encore calculée : H3 renvoie [], l'Explainer garde un contexte utile.
+    assert ex.prerequis(COURS, 3, lambda _: []) == ["perceptron", "fonction d'activation", "ReLU"]
+
+
+def test_h3_de_ghayth_est_trouve() -> None:
+    from ingestion.course_map import get_prerequisites
+
+    assert _PREREQUIS_H3_ORIGINAL() is get_prerequisites
 
 
 # --------------------------------------------------------------------------- génération

@@ -4,7 +4,9 @@
    (``rag/search.py``, B2) s'il existe, sinon bouchon local qui lit les slides du cours ;
 2. un SEUL appel ``agents.llm.generer_structure`` par lot (schéma court, ``max_tokens`` serré :
    le LLM tourne sur CPU) ;
-3. vérification Python des QCM (4 choix distincts, ``bonne_reponse`` dans 0..3, bonne réponse
+3. nettoyage (choix recopiés dans l'énoncé retirés, préfixes « A) », « b. » retirés des choix,
+   LaTeX nu entouré de ``$…$`` pour KaTeX),
+   vérification Python des QCM (4 choix distincts, ``bonne_reponse`` dans 0..3, bonne réponse
    non dupliquée), rejet des QCM invalides, puis mélange des choix ;
 4. sans LLM (``LLMIndisponible``) : flashcards titre → texte de la slide, quiz vide avec message.
 
@@ -274,8 +276,137 @@ def _schema_lot(nom: str, n: int) -> type[BaseModel]:
 _LATEX_CASSE = str.maketrans({"\t": "\\t", "\b": "\\b", "\f": "\\f", "\r": "\\r"})
 
 
-def nettoyer(texte: str) -> str:
-    return texte.translate(_LATEX_CASSE).strip()
+# Préfixe de choix recopié malgré le mélange : « A) », « b. », « (C) », « D: », « a - ».
+_PREFIXE_CHOIX = re.compile(r"^\s*\(?[A-Da-d]\s*[).:\-–]\s+")
+# Ligne de choix recopiée sous la question : « - A) x », « A) x », « a. x », « (b) x », « • C: x ».
+_LIGNE_CHOIX = re.compile(r"^\s*(?:[-*•]\s*)?\(?[A-Da-d](?:\s*\)\s*|\s*[.:\-–]\s+)\S")
+# Choix recopiés sur la même ligne que la question : « … ? A) x B) y … » (A puis B exigés).
+_CHOIX_EN_LIGNE = re.compile(r"\s+\(?[Aa]\s*\)\s*\S.*?\s\(?[Bb]\s*\)\s*\S")
+# Intitulé laissé seul avant les choix : « Choix : », « Options : », « Propositions : ».
+_INTITULE_CHOIX = re.compile(r"^\s*(?:choix|options?|propositions?|réponses?|choices|answers?)\s*:?\s*$",
+                             re.IGNORECASE)
+
+# Formules déjà délimitées ($$…$$, $…$, \[…\], \(…\)) : laissées telles quelles.
+_FORMULE_DELIMITEE = re.compile(r"\$\$.+?\$\$|\$[^$]+\$|\\\[.+?\\\]|\\\(.+?\\\)", re.DOTALL)
+# Jeton LaTeX « fort » : commande (\frac, \theta…) ou indice / exposant (x^2, x_i, h^{(i)}).
+_LATEX_FORT = re.compile(r"\\[A-Za-z]+|[A-Za-z0-9)\]}][\^_]")
+_OPERATEURS = {"=", "+", "-", "−", "*", "/", "<", ">", "≤", "≥", "×", "·", "±", "≈", "≠", "|"}
+_MOTS_OUTILS = {
+    "de", "la", "le", "les", "et", "un", "une", "du", "des", "en", "est", "ou", "au", "aux",
+    "par", "sur", "pour", "avec", "sans", "on", "of", "the", "and", "or", "is", "in", "to",
+    "an", "by", "for", "it", "if", "as", "at",
+}
+_PONCTUATION_FINALE = ".,;:!?…"
+
+
+def _jeton_math_faible(jeton: str) -> bool:
+    """Jeton qui peut prolonger une formule : opérateur, nombre, variable courte, f(x)…"""
+    if jeton in _OPERATEURS:
+        return True
+    coeur = jeton.rstrip(_PONCTUATION_FINALE) or jeton
+    if re.fullmatch(r"[A-Za-z]{1,3}", coeur):
+        return coeur.lower() not in _MOTS_OUTILS
+    return re.fullmatch(r"[A-Za-z0-9()\[\]{}+\-−*/=<>|.,'²³]+", coeur) is not None and any(
+        c in coeur for c in "0123456789()[]{}=+-−*/<>|"
+    )
+
+
+def _segments_latex(mots: list[str]) -> list[tuple[int, int]]:
+    """Intervalles [début, fin) des suites de jetons qui forment une formule LaTeX nue."""
+    segments: list[tuple[int, int]] = []
+    i = 0
+    while i < len(mots):
+        if not _LATEX_FORT.search(mots[i]):
+            i += 1
+            continue
+        debut, limite = i, segments[-1][1] if segments else 0
+        while debut > limite and _jeton_math_faible(mots[debut - 1]):
+            debut -= 1
+        fin, ouvertes = i + 1, mots[i].count("{") - mots[i].count("}")
+        while fin < len(mots) and (ouvertes > 0 or _LATEX_FORT.search(mots[fin]) or _jeton_math_faible(mots[fin])):
+            ouvertes += mots[fin].count("{") - mots[fin].count("}")
+            fin += 1
+        # Rogner les mots alphabétiques en bordure qui ne sont pas reliés par un opérateur (« Si x_i »).
+        while fin - debut > 1 and mots[debut].isalpha() and mots[debut + 1] not in _OPERATEURS:
+            debut += 1
+        while fin - debut > 1 and mots[fin - 1].rstrip(_PONCTUATION_FINALE).isalpha()                 and mots[fin - 2] not in _OPERATEURS:
+            fin -= 1
+        segments.append((debut, fin))
+        i = fin
+    return segments
+
+
+def _delimiter_texte_libre(texte: str) -> str:
+    """Entourer de $…$ chaque formule LaTeX nue d'un texte sans délimiteurs (espaces conservés)."""
+    corps = texte.strip()
+    if not corps or not _LATEX_FORT.search(corps):
+        return texte
+    gauche, droite = texte[: len(texte) - len(texte.lstrip())], texte[len(texte.rstrip()):]
+    morceaux = re.split(r"(\s+)", corps)
+    mots, espaces = morceaux[0::2], morceaux[1::2] + [""]
+    sortie: list[str] = []
+    k = 0
+    for debut, fin in _segments_latex(mots):
+        for j in range(k, debut):
+            sortie += [mots[j], espaces[j]]
+        formule = "".join(mots[j] + espaces[j] for j in range(debut, fin - 1)) + mots[fin - 1]
+        sans_ponctuation = formule.rstrip(_PONCTUATION_FINALE)
+        sortie += [f"${sans_ponctuation}$", formule[len(sans_ponctuation):], espaces[fin - 1]]
+        k = fin
+    for j in range(k, len(mots)):
+        sortie += [mots[j], espaces[j]]
+    return gauche + "".join(sortie) + droite
+
+
+def delimiter_latex(texte: str) -> str:
+    r"""Entourer de $…$ les segments LaTeX nus (\frac, \theta, x^2, x_i…) pour KaTeX (A5).
+
+    Les formules déjà délimitées ne sont pas modifiées ; un texte sans LaTeX est rendu tel quel.
+    """
+    if not _LATEX_FORT.search(texte):
+        return texte
+    morceaux: list[str] = []
+    dernier = 0
+    for m in _FORMULE_DELIMITEE.finditer(texte):
+        morceaux += [_delimiter_texte_libre(texte[dernier:m.start()]), m.group(0)]
+        dernier = m.end()
+    morceaux.append(_delimiter_texte_libre(texte[dernier:]))
+    return "".join(morceaux)
+
+
+def retirer_choix_recopies(question: str) -> str:
+    """Garder seulement la question quand le LLM y a recopié les choix (« A) … », « - b. … »).
+
+    La première ligne est toujours gardée ; tout ce qui suit la première ligne de choix est retiré,
+    ainsi qu'un intitulé isolé (« Choix : ») juste avant ; sur une seule ligne, tout ce qui suit
+    « A) … B) … » est retiré. L'énoncé n'est jamais vidé.
+    """
+    lignes = question.strip().splitlines()
+    if not lignes:
+        return question.strip()
+    gardees = [lignes[0]]
+    for ligne in lignes[1:]:
+        if _LIGNE_CHOIX.match(ligne):
+            break
+        gardees.append(ligne)
+    while len(gardees) > 1 and (not gardees[-1].strip() or _INTITULE_CHOIX.match(gardees[-1])):
+        gardees.pop()
+    m = _CHOIX_EN_LIGNE.search(gardees[-1])
+    if m and gardees[-1][:m.start()].strip():
+        gardees[-1] = gardees[-1][:m.start()]
+    return "\n".join(gardees).strip()
+
+
+def nettoyer(texte: str, *, choix: bool = False, question: bool = False,
+             delimiter: bool = False) -> str:
+    """Réparer le LaTeX abîmé ; pour un choix, retirer « A) », « b. »… ; pour une question,
+    retirer les choix recopiés après elle ; si delimiter, entourer le LaTeX de $…$ (KaTeX)."""
+    texte = texte.translate(_LATEX_CASSE).strip()
+    if choix:
+        texte = _PREFIXE_CHOIX.sub("", texte)
+    if question:
+        texte = retirer_choix_recopies(texte)
+    return delimiter_latex(texte).strip() if delimiter else texte.strip()
 
 
 # --------------------------------------------------------------------------- vérification et mélange
@@ -371,6 +502,12 @@ def generer_quiz_detaille(
     retenus: list[QCM] = []
     vues: set[str] = set()
     for brut in lot.qcm:  # type: ignore[attr-defined]
+        # Nettoyer AVANT la vérification : « A) x » et « B) x » deviennent des choix identiques.
+        brut = brut.model_copy(update={
+            "question": nettoyer(brut.question, question=True, delimiter=True),
+            "choix": [nettoyer(c, choix=True, delimiter=True) for c in brut.choix],
+            "explication": nettoyer(brut.explication, delimiter=True),
+        })
         motif = valider_qcm(brut)
         if motif is None and normaliser(brut.question) in vues:
             motif = "question en double"
@@ -379,10 +516,10 @@ def generer_quiz_detaille(
             continue
         vues.add(normaliser(brut.question))
         qcm = QCM(
-            question=nettoyer(brut.question),
-            choix=[nettoyer(c) for c in brut.choix],
+            question=brut.question,
+            choix=brut.choix,
             bonne_reponse=brut.bonne_reponse,
-            explication=nettoyer(brut.explication),
+            explication=brut.explication,
             niveau_bloom=niveau_bloom or brut.niveau_bloom,
             source=_source(chunks, slide if slide is not None else brut.slide),
         )
@@ -445,7 +582,7 @@ def generer_flashcards(
     cartes: list[Flashcard] = []
     vues: set[str] = set()
     for brute in lot.cartes:  # type: ignore[attr-defined]
-        recto, verso = nettoyer(brute.recto), nettoyer(brute.verso)
+        recto, verso = nettoyer(brute.recto, delimiter=True), nettoyer(brute.verso, delimiter=True)
         if not recto or not verso or normaliser(recto) in vues:
             continue
         vues.add(normaliser(recto))
@@ -518,5 +655,6 @@ __all__ = [
     "quiz_agent",
     "recherche",
     "recherche_locale",
+    "retirer_choix_recopies",
     "valider_qcm",
 ]

@@ -21,7 +21,12 @@ Règles :
 - `explication` : une phrase courte qui justifie la bonne réponse.
 - `niveau_bloom` : memoriser, comprendre, appliquer ou analyser.
 - `slide` : numéro de la slide sur laquelle porte la question.
-- Choix courts (quelques mots). Écris les formules en texte simple, sans LaTeX.
+- Choix courts (quelques mots), SANS préfixe : jamais « A) », « B. », « c) » ni « 1. »
+  au début d'un choix (l'ordre des choix est mélangé ensuite).
+- `question` contient UNIQUEMENT l'énoncé : ne recopie jamais les choix dedans
+  (pas de lignes « - A) … », « A) … », « a. … » après la question) ; ils vont dans `choix`.
+- Toute formule ou variable mathématique est entourée de $...$ : « $J(\theta) = \frac{1}{2m}$ »,
+  « $x_i$ », jamais de LaTeX nu comme « J(\theta) = \frac{1}{2m} ».
 - Rédige la question, les choix et l'explication dans la langue demandée.
 
 ## Flashcards
@@ -30,6 +35,8 @@ Tu es un enseignant qui rédige des flashcards de révision à partir de slides 
 Règles :
 - Appuie-toi UNIQUEMENT sur le contenu des slides fournies, n'invente aucun fait.
 - `recto` : une question ou une notion courte ; `verso` : la réponse en une ou deux phrases.
-- Une notion différente par carte. Formules en texte simple, sans LaTeX.
+- Une notion différente par carte.
+- Toute formule ou variable mathématique est entourée de $...$ (ex. « $\sum_{i=1}^{m} x_i$ »),
+  jamais de LaTeX nu.
 - `slide` : numéro de la slide sur laquelle porte la carte.
 - Rédige dans la langue demandée.

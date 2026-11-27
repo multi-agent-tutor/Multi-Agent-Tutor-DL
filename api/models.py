@@ -11,11 +11,14 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from schemas.models import COURSE_ID_PATTERN, Langue, Niveau, Source
+from schemas.models import COURSE_ID_PATTERN, Langue, Message, Niveau, Source
 
 
 class _Base(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+MAX_HISTORIQUE = 40
 
 
 class AskRequest(_Base):
@@ -26,6 +29,10 @@ class AskRequest(_Base):
     question: str = Field(min_length=1)
     niveau: Niveau = "intermediaire"
     langue: Langue = "fr"
+    historique: list[Message] = Field(
+        default_factory=list, max_length=MAX_HISTORIQUE,
+        description="Tours précédents de la conversation (A3), du plus ancien au plus récent",
+    )
 
 
 NiveauBloom = Literal["memoriser", "comprendre", "appliquer", "analyser"]

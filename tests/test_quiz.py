@@ -162,6 +162,132 @@ def test_quiz_vide_si_tous_rejetes(monkeypatch: pytest.MonkeyPatch) -> None:
     assert resultat.qcm == [] and "vérification" in resultat.message
 
 
+# --------------------------------------------------------------------------- nettoyage : préfixes et LaTeX
+
+
+@pytest.mark.parametrize("brut, attendu", [
+    ("A) Une droite", "Une droite"),
+    ("B. Une parabole", "Une parabole"),
+    ("c) un arbre", "un arbre"),
+    ("(D) Un réseau", "Un réseau"),
+    ("a: la variance", "la variance"),
+    ("  b - le biais  ", "le biais"),
+])
+def test_nettoyer_retire_prefixe_de_choix(brut: str, attendu: str) -> None:
+    assert qz.nettoyer(brut, choix=True) == attendu
+
+
+@pytest.mark.parametrize("texte", ["A", "Apprentissage supervisé", "B.subtilis", "E) hors A-D", "3 paramètres"])
+def test_nettoyer_garde_les_choix_sans_prefixe(texte: str) -> None:
+    assert qz.nettoyer(texte, choix=True) == texte
+
+
+def test_nettoyer_ne_retire_pas_de_prefixe_hors_choix() -> None:
+    assert qz.nettoyer("A) ceci est une question ?") == "A) ceci est une question ?"
+
+
+@pytest.mark.parametrize("brut", [
+    "Que minimise la régression linéaire ?\n- A) L'erreur quadratique\n- B) Le biais\n- C) x\n- D) y",
+    "Que minimise la régression linéaire ?\nA) L'erreur quadratique\nB) Le biais",
+    "Que minimise la régression linéaire ?\n\nChoix :\na. L'erreur quadratique\nb. Le biais",
+    "Que minimise la régression linéaire ?\n(a) L'erreur quadratique\n(b) Le biais",
+    "Que minimise la régression linéaire ?\n• C: x\n• D: y",
+    "Que minimise la régression linéaire ? A) L'erreur quadratique B) Le biais C) x D) y",
+])
+def test_nettoyer_question_retire_les_choix_recopies(brut: str) -> None:
+    assert qz.nettoyer(brut, question=True) == "Que minimise la régression linéaire ?"
+
+
+@pytest.mark.parametrize("texte", [
+    "Que minimise la régression linéaire ?",
+    "Soit le modèle suivant.\nQue vaut la pente ?",
+    "A) est-elle une question ?",          # première ligne toujours gardée
+    "Pourquoi la vitamine A) est-elle citée ?",  # « A) » seul, sans « B) » ensuite
+    "Avec a = 2,\nAprès une itération, que vaut $\\theta$ ?",
+])
+def test_nettoyer_question_garde_l_enonce(texte: str) -> None:
+    assert qz.nettoyer(texte, question=True) == texte
+
+
+def test_qcm_question_sans_choix_recopies(monkeypatch: pytest.MonkeyPatch) -> None:
+    question = "Que minimise la régression linéaire ?\n- A) L'erreur quadratique moyenne\n- B) Le biais"
+    _imposer(monkeypatch, {"qcm": [_qcm(question)]})
+    q = qz.generer_quiz(COURSE_ID, slide=2, rng=random.Random(0))[0]
+    assert q.question == "Que minimise la régression linéaire ?"
+    assert "ne recopie jamais les choix" in qz.prompt_systeme("QCM")
+
+
+@pytest.mark.parametrize("brut, attendu", [
+    (r"J(\theta) = \frac{1}{m} \times \text{Erreur quadratique} moyenne.",
+     r"$J(\theta) = \frac{1}{m} \times \text{Erreur quadratique}$ moyenne."),
+    (r"Que vaut \theta ?", r"Que vaut $\theta$ ?"),
+    (r"Si x_i est grand, h^{(i)} augmente.", r"Si $x_i$ est grand, $h^{(i)}$ augmente."),
+    (r"Le modèle y = ax + \beta minimise.", r"Le modèle $y = ax + \beta$ minimise."),
+    (r"il a \alpha et \beta", r"il a $\alpha$ et $\beta$"),
+    (r"On somme \sum_{i=1}^{m} (h(x^{(i)}) - y^{(i)})^2 sur les données.",
+     r"On somme $\sum_{i=1}^{m} (h(x^{(i)}) - y^{(i)})^2$ sur les données."),
+])
+def test_delimiter_latex_nu(brut: str, attendu: str) -> None:
+    assert qz.delimiter_latex(brut) == attendu
+
+
+@pytest.mark.parametrize("texte", [
+    r"Déjà délimité : $\frac{1}{2m} \sum x_i$.",
+    r"En bloc : $$J(\theta) = \frac{1}{2m}$$",
+    r"Avec \(\theta\) et \[x^2\]",
+    "Aucune formule ici, seulement du texte.",
+    "Prix : 5 $ seulement",
+])
+def test_delimiter_latex_laisse_le_reste_intact(texte: str) -> None:
+    assert qz.delimiter_latex(texte) == texte
+
+
+def test_delimiter_latex_mixte_delimite_et_nu() -> None:
+    assert qz.delimiter_latex(r"Avec $\alpha$ puis \beta seul.") == r"Avec $\alpha$ puis $\beta$ seul."
+
+
+def test_nettoyer_ne_delimite_que_sur_demande() -> None:
+    # Par défaut (Explainer) : réparation seule ; le quiz et les flashcards passent delimiter=True.
+    assert qz.nettoyer(r"La pente \beta_1 est estimée") == r"La pente \beta_1 est estimée"
+    assert qz.nettoyer(r"La pente \beta_1 est estimée", delimiter=True) == r"La pente $\beta_1$ est estimée"
+
+
+def test_qcm_prefixes_retires_et_latex_delimite(monkeypatch: pytest.MonkeyPatch) -> None:
+    choix = [r"A) J(\theta) = \frac{1}{2m}", "B) L'erreur absolue", "c) Le nombre de données", "D. Le biais"]
+    brut = _qcm(r"Quelle formule définit J(\theta) ?", choix, bonne=0)
+    brut["explication"] = r"La fonction de coût vaut \frac{1}{2m} \sum (h(x) - y)^2."
+    _imposer(monkeypatch, {"qcm": [brut]})
+    q = qz.generer_quiz(COURSE_ID, slide=2, rng=random.Random(0))[0]
+    assert q.question == r"Quelle formule définit $J(\theta)$ ?"
+    assert sorted(q.choix) == sorted([r"$J(\theta) = \frac{1}{2m}$", "L'erreur absolue",
+                                      "Le nombre de données", "Le biais"])
+    assert q.choix[q.bonne_reponse] == r"$J(\theta) = \frac{1}{2m}$"
+    assert q.explication == r"La fonction de coût vaut $\frac{1}{2m} \sum (h(x) - y)^2$."
+
+
+def test_qcm_choix_identiques_hors_prefixe_rejete(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Les préfixes sont retirés AVANT la vérification : « A) x » et « B) x » sont des doublons.
+    _imposer(monkeypatch, {"qcm": [_qcm(choix=["A) Une droite", "B) Une droite", "C) Un arbre", "D) Un cercle"])]})
+    resultat = qz.generer_quiz_detaille(COURSE_ID, 2)
+    assert resultat.qcm == [] and "vérification" in resultat.message
+
+
+def test_flashcards_latex_delimite(monkeypatch: pytest.MonkeyPatch) -> None:
+    _imposer(monkeypatch, {"cartes": [
+        {"recto": "Fonction de coût J(\\theta)", "verso": "J(\\theta) = \\frac{1}{2m} \\sum_i e_i^2", "slide": 2},
+    ]})
+    carte = qz.generer_flashcards(COURSE_ID, slide=2)[0]
+    assert carte.recto == r"Fonction de coût $J(\theta)$"
+    assert carte.verso == r"$J(\theta) = \frac{1}{2m} \sum_i e_i^2$"
+
+
+def test_prompt_impose_dollars_et_interdit_prefixes() -> None:
+    qcm, cartes = qz.prompt_systeme("QCM"), qz.prompt_systeme("Flashcards")
+    assert "$...$" in qcm and "$...$" in cartes
+    assert "SANS préfixe" in qcm and "« A) »" in qcm
+    assert "sans LaTeX" not in qcm and "sans LaTeX" not in cartes
+
+
 # --------------------------------------------------------------------------- flashcards
 
 

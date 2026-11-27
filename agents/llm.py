@@ -177,12 +177,48 @@ def _messages(system: str, prompt: str) -> list[dict[str, str]]:
     return [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
 
 
+# llama.cpp déroule ``maxLength`` / ``maxItems`` en options imbriquées : au-delà, la conversion
+# du schéma en grammaire échoue (« grammar recursion depth limit exceeded (max 256) ») ou plante.
+# Un ``maxLength`` > MAX_LENGTH_GRAMMAIRE est donc retiré du schéma envoyé (le ramener à 200
+# coupait les phrases en plein milieu) : ``max_tokens`` borne la longueur réelle de la sortie.
+# ``maxItems`` est plafonné (le Critic juge jusqu'à 8 affirmations).
+MAX_LENGTH_GRAMMAIRE = 200
+MAX_ITEMS_GRAMMAIRE = 10
+
+
+def borner_schema(schema: Any) -> Any:
+    """Copie du schéma JSON rendue convertible en grammaire par llama.cpp.
+
+    - ``maxLength`` > ``MAX_LENGTH_GRAMMAIRE`` : supprimé ; sinon conservé tel quel ;
+    - ``maxItems`` > ``MAX_ITEMS_GRAMMAIRE`` : ramené au plafond ;
+    - ``minLength`` / ``minItems`` : ramenés sous le même plafond (et sous le max restant)
+      pour garder un schéma cohérent et une grammaire de profondeur bornée.
+
+    Seule la grammaire est concernée : la validation Pydantic garde les limites d'origine.
+    """
+    if isinstance(schema, list):
+        return [borner_schema(s) for s in schema]
+    if not isinstance(schema, dict):
+        return schema
+    borne = {cle: borner_schema(valeur) for cle, valeur in schema.items()}
+    if isinstance(borne.get("maxLength"), int) and borne["maxLength"] > MAX_LENGTH_GRAMMAIRE:
+        del borne["maxLength"]
+    if isinstance(borne.get("maxItems"), int) and borne["maxItems"] > MAX_ITEMS_GRAMMAIRE:
+        borne["maxItems"] = MAX_ITEMS_GRAMMAIRE
+    for maxi, mini, plafond in (("maxLength", "minLength", MAX_LENGTH_GRAMMAIRE),
+                                ("maxItems", "minItems", MAX_ITEMS_GRAMMAIRE)):
+        if isinstance(borne.get(mini), int):
+            limite = borne[maxi] if isinstance(borne.get(maxi), int) else plafond
+            borne[mini] = min(borne[mini], limite, plafond)
+    return borne
+
+
 def _brut_llamacpp(messages: list[dict[str, str]], max_tokens: int,
                    schema_json: dict[str, Any] | None) -> str:
     llama = _llama()
     options: dict[str, Any] = {"max_tokens": max_tokens, "temperature": _temperature()}
     if schema_json is not None:
-        options["response_format"] = {"type": "json_object", "schema": schema_json}
+        options["response_format"] = {"type": "json_object", "schema": borner_schema(schema_json)}
     try:
         with _verrou:
             reponse = llama.create_chat_completion(messages=messages, **options)
@@ -282,6 +318,17 @@ def _extraire_json(texte: str) -> str:
     return texte[debut:fin + 1] if 0 <= debut < fin else texte
 
 
+def _message_correction(erreur: ValidationError) -> str:
+    """Consigne de la 2e tentative ; un JSON invalide signale en pratique une sortie coupée
+    par ``max_tokens`` (la grammaire garantit sinon la syntaxe) : on demande alors plus court."""
+    if any(detail.get("type") == "json_invalid" for detail in erreur.errors()):
+        return (
+            "Ta réponse a été coupée avant la fin : le JSON est incomplet. Renvoie un JSON complet "
+            "et nettement plus court (phrases plus brèves, moins de détails)."
+        )
+    return f"Ta réponse est invalide :\n{erreur}\nRenvoie un JSON corrigé."
+
+
 def generer_texte(system: str, prompt: str, *, max_tokens: int = 1024) -> str:
     """Appeler le LLM local et renvoyer sa réponse en texte libre.
 
@@ -325,7 +372,7 @@ def generer_structure(system: str, prompt: str, schema: type[T], *, max_tokens: 
             messages = [
                 *messages,
                 {"role": "assistant", "content": texte},
-                {"role": "user", "content": f"Ta réponse est invalide :\n{e}\nRenvoie un JSON corrigé."},
+                {"role": "user", "content": _message_correction(e)},
             ]
     raise LLMIndisponible(f"sortie invalide après 2 tentatives : {derniere_erreur}")
 
@@ -333,6 +380,7 @@ def generer_structure(system: str, prompt: str, schema: type[T], *, max_tokens: 
 __all__ = [
     "LLMIndisponible",
     "backend",
+    "borner_schema",
     "chemin_modele",
     "est_configure",
     "generer_structure",

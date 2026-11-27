@@ -45,7 +45,7 @@ Tests : `tests/test_graph.py`.
 Explique une slide au niveau de l'étudiant (`prompts/explainer.md` : `Commun` + `Débutant` |
 `Intermédiaire` | `Avancé`), dans l'ordre idée clé → explication → exemple → lien avec la slide
 précédente → à retenir, avec les citations [Slide N]. Contexte : la slide, ses voisines N-1 / N+1,
-ses figures et formules, ses prérequis (bouchon jusqu'à `get_prerequisites` de H3). Sans LLM :
+ses figures et formules, ses prérequis (`get_prerequisites` de H3, Ghayth ; repli sur les concepts voisins sans carte du cours). Sans LLM :
 repli extractif tiré de la slide. Tests : `tests/test_explainer.py`.
 
 ## O3 — Critic et boucle de correction (`critic.py`)

@@ -3,8 +3,9 @@
 1. Charge la slide demandée (``slide_courante``, ou « slide 5 » dans la question) et ses
    voisines N-1 / N+1, via ``agents.quiz.charger_cours`` (cours de l'API, ``data/processed``
    ou cours d'exemple) ;
-2. ajoute les prérequis de la slide : ``get_prerequisites(slide_id)`` de H3 quand il existera,
-   sinon un bouchon qui reprend les concepts des deux slides précédentes ;
+2. ajoute les prérequis de la slide : ``get_prerequisites(slide_id)`` de H3
+   (``ingestion.course_map``, Ghayth), dont les ids de slides deviennent « Slide N : titre » ;
+   sans carte du cours, repli sur les concepts des deux slides précédentes ;
 3. un SEUL appel ``agents.llm.generer_structure`` avec le prompt du niveau
    (``prompts/explainer.md``) et le modèle de sortie ``Explication`` :
    idée clé → explication → exemple → lien avec la slide précédente → à retenir ;
@@ -134,10 +135,7 @@ def prompt_systeme(niveau: Niveau) -> str:
 
 
 def prerequis_bouchon(cours: Course, numero: int) -> list[str]:
-    """Bouchon de H3 : concepts des deux slides précédentes, sans doublon.
-
-    TODO [H3] remplacé par ``get_prerequisites(slide_id)`` dès que le module existe.
-    """
+    """Repli quand la carte du cours (H3) n'existe pas : concepts des deux slides précédentes, sans doublon."""
     vus: dict[str, str] = {}
     for s in cours.slides[max(0, numero - 3): numero - 1]:
         for concept in s.concepts:
@@ -146,27 +144,48 @@ def prerequis_bouchon(cours: Course, numero: int) -> list[str]:
 
 
 def _prerequis_h3() -> Prerequis | None:
-    """``get_prerequisites`` de H3 s'il est disponible (module ``graphe_cours`` ou ``ingestion``)."""
-    for nom in ("graphe_cours.prerequis", "graphe_cours", "ingestion.prerequis"):
-        racine = nom.split(".")[0]
-        if importlib.util.find_spec(racine) is None or importlib.util.find_spec(nom) is None:
-            continue
+    """``get_prerequisites`` de H3 (``ingestion.course_map``, Ghayth) s'il est installé."""
+    nom = "ingestion.course_map"
+    try:
+        if importlib.util.find_spec("ingestion") is None or importlib.util.find_spec(nom) is None:
+            return None
         fonction = getattr(importlib.import_module(nom), "get_prerequisites", None)
-        if callable(fonction):
-            return fonction
-    return None
+    except ImportError as e:
+        log.warning("module %s inutilisable : %s", nom, e)
+        return None
+    return fonction if callable(fonction) else None
+
+
+def libelle_prerequis(cours: Course, valeur: str) -> str:
+    """H3 renvoie des ids de slides (``<course_id>__s003``) : les rendre lisibles pour le LLM.
+
+    ``<course_id>__s003`` du même cours → « Slide 3 : <titre> » ; toute autre valeur (un nom de
+    notion) est gardée telle quelle.
+    """
+    m = re.fullmatch(rf"{re.escape(cours.id)}__s(\d+)", valeur)
+    if not m:
+        return valeur
+    n = int(m.group(1))
+    if not 1 <= n <= cours.nombre_slides:
+        return ""
+    titre = cours.slides[n - 1].titre.strip()
+    return f"Slide {n} : {titre}" if titre else f"Slide {n}"
 
 
 def prerequis(cours: Course, numero: int, source: Prerequis | None = None) -> list[str]:
-    """Prérequis de la slide : ``source`` ou H3 s'ils existent, sinon le bouchon."""
+    """Prérequis de la slide : ``source`` ou H3 (carte du cours), sinon le repli sur les concepts voisins.
+
+    H3 renvoie ``[]`` quand la carte du cours n'a pas encore été calculée : on passe alors au repli.
+    """
     fonction = source or _prerequis_h3()
     if fonction is not None:
         try:
-            return [str(p).strip() for p in fonction(cours.slides[numero - 1].id) if str(p).strip()][
-                :MAX_PREREQUIS
-            ]
+            brut = [str(p).strip() for p in fonction(cours.slides[numero - 1].id) if str(p).strip()]
+            libelles = [lib for lib in (libelle_prerequis(cours, p) for p in brut) if lib]
+            if libelles:
+                return list(dict.fromkeys(libelles))[:MAX_PREREQUIS]
         except Exception as e:  # noqa: BLE001 - un prérequis manquant ne doit pas bloquer l'explication
-            log.warning("get_prerequisites a échoué, repli sur le bouchon : %s", e)
+            log.warning("get_prerequisites a échoué, repli sur les concepts voisins : %s", e)
     return prerequis_bouchon(cours, numero)
 
 
