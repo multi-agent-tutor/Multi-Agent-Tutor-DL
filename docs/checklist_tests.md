@@ -1,7 +1,9 @@
 # T1 — Checklist de tests manuels
 
 Responsable : Ghayth. Phase S5, dépend de A5 (frontend). Chaque bug trouvé → une issue GitHub
-(modèle en bas de page). Statut : **checklist prête, campagne à lancer quand A5 est livré.**
+(modèle en bas de page). Statut : **campagne 1 faite le 2026-11-21 (commit `bc1601d`)** :
+résultats et brouillons d'issues dans [`rapport_t1.md`](rapport_t1.md). À refaire après correction des
+bugs 1 et 2 (cours réels), et pour le Q&A réel une fois les modèles RAG installés.
 
 ## Cours de test (au moins 3, formats et langues variés)
 
@@ -93,17 +95,21 @@ Environnement à noter dans chaque issue : OS, navigateur, commit testé, `LLM_B
 
 ## Suivi de la campagne
 
-| Section | C-A | C-B | C-C | C-D | Issues |
-|---|---|---|---|---|---|
-| 1. Upload | | | | | |
-| 2. Navigation | | | | | |
-| 3. Explication | | | | | |
-| 4. Q&A | | | | | |
-| 5. Quiz | | | | | |
-| 6. Flashcards | | | | | |
-| 7. Ressources | | | | | |
-| 8. TTS / langues | | | | | |
-| 9. Robustesse | | | | | |
+Campagne 1 (2026-11-21). L'interface ne peut ouvrir que le cours d'exemple de l'API
+(`ml_regression_lineaire_fr`, colonne « Ex. ») : les cours C-A à C-D ont été testés par l'API.
+✅ OK · ❌ bug · ⚠️ partiel · — non testable.
+
+| Section | Ex. | C-B self-attention | C-C scan | Issues |
+|---|---|---|---|---|
+| 1. Upload | ❌ fichier ignoré | — | ❌ cours d'exemple renvoyé | 1, 8 |
+| 2. Navigation | ✅ boutons, clavier, bornes, mobile | ❌ cours introuvable (404) | — | 2 |
+| 3. Explication | ⚠️ 3 niveaux OK, LaTeX/gras bruts, attente invisible | ✅ par l'API (s033) | — | 3, 4, 9, 12 |
+| 4. Q&A | ⚠️ repli seulement (modèles RAG absents) | — | — | 10 |
+| 5. Quiz | ❌ toujours vide (Critic) ; 500 sans qdrant | — | — | 5, 6 |
+| 6. Flashcards | ✅ génération + SM-2 « dues » | — | — | 6 |
+| 7. Ressources | ⚠️ OK mais 17 s | ❌ 404 | — | 7, 11 |
+| 8. TTS / langues | ✅ EN, AR (RTL) ; TTS non livré | — | — | — |
+| 9. Robustesse | ✅ 404/415/422 ; ❌ PDF vide/corrompu acceptés | — | — | 8, 13 |
 
 ## Modèle d'issue GitHub
 
