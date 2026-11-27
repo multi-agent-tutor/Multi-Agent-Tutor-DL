@@ -30,21 +30,21 @@ L'interface ne peut afficher **que** le cours d'exemple : c'est le constat princ
 d'un vrai cours fonctionne : navigation, clavier, niveaux, citations cliquables, SSE, gestion des erreurs
 404 / 415 / 422, arabe RTL, anglais, largeur mobile, flashcards, révision SM-2.
 
-| # | Gravité | Titre | Module | Pour |
-|---|---|---|---|---|
-| 1 | bloquant | `POST /upload` ignore le fichier et renvoie le cours d'exemple | api | Ali |
-| 2 | bloquant | Les cours ingérés (`data/processed`) sont introuvables : `GET /course/{id}` → 404 | api | Ali |
-| 3 | majeur | L'indicateur d'attente n'est jamais visible : panneau Explication vide pendant 1 à 4 min | frontend | Ali |
-| 4 | majeur | Formules LaTeX et gras Markdown affichés bruts dans l'explication | agents / frontend | Ons, Ali |
-| 5 | majeur | Quiz toujours vide : le Critic rejette tous les QCM (rejets incohérents, LaTeX abîmé) | agents | Ons, Ali |
-| 6 | majeur | `/quiz` et `/flashcards` → 500 si une dépendance du RAG manque ; le frontend dit « API injoignable » | agents / api | Ali |
-| 7 | majeur | `GET /resources` → 404 sur les slides des cours ingérés | api | Ali |
-| 8 | majeur | Un PDF vide ou corrompu est accepté (HTTP 200) | api | Ali |
-| 9 | mineur | Citation fausse : l'explication de la slide 1 attribue à `[Slide 1]` une formule de la slide 2 | agents | Ons |
-| 10 | mineur | Le repli « Q&A non disponible » s'affiche comme une réponse sourcée `[Slide 1]` | frontend / agents | Ali, Both |
-| 11 | mineur | `GET /resources` met 17 s alors que le catalogue est local | agents | Ali |
-| 12 | mineur | Les explications sont regénérées à chaque rechargement et s'empilent dans la file du LLM | frontend | Ali |
-| 13 | mineur | Bundle JS de 529 Ko (avertissement Vite > 500 Ko) | frontend | Ali |
+| # | Gravité | Titre | Module | Pour | Issue |
+|---|---|---|---|---|---|
+| 1 | bloquant | `POST /upload` ignore le fichier et renvoie le cours d'exemple | api | Ali | [#37](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/37) |
+| 2 | bloquant | Les cours ingérés (`data/processed`) sont introuvables : `GET /course/{id}` → 404 | api | Ali | [#36](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/36) |
+| 3 | majeur | L'indicateur d'attente n'est jamais visible : panneau Explication vide pendant 1 à 4 min | frontend | Ali | [#35](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/35) |
+| 4 | majeur | Formules LaTeX et gras Markdown affichés bruts dans l'explication | agents / frontend | Ons, Ali | [#34](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/34) |
+| 5 | majeur | Quiz toujours vide : le Critic rejette tous les QCM (rejets incohérents, LaTeX abîmé) | agents | Ons, Ali | [#33](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/33) |
+| 6 | majeur | `/quiz` et `/flashcards` → 500 si une dépendance du RAG manque ; le frontend dit « API injoignable » | agents / api | Ali | [#32](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/32) |
+| 7 | majeur | `GET /resources` → 404 sur les slides des cours ingérés | api | Ali | [#31](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/31) |
+| 8 | majeur | Un PDF vide ou corrompu est accepté (HTTP 200) | api | Ali | [#30](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/30) |
+| 9 | mineur | Citation fausse : l'explication de la slide 1 attribue à `[Slide 1]` une formule de la slide 2 | agents | Ons | [#29](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/29) |
+| 10 | mineur | Le repli « Q&A non disponible » s'affiche comme une réponse sourcée `[Slide 1]` | frontend / agents | Ali, Both | [#28](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/28) |
+| 11 | mineur | `GET /resources` met 17 s alors que le catalogue est local | agents | Ali | [#27](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/27) |
+| 12 | mineur | Les explications sont regénérées à chaque rechargement et s'empilent dans la file du LLM | frontend | Ali | [#26](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/26) |
+| 13 | mineur | Bundle JS de 529 Ko (avertissement Vite > 500 Ko) | frontend | Ali | [#25](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/25) |
 
 ## Non testé (et pourquoi)
 
@@ -73,11 +73,11 @@ d'un vrai cours fonctionne : navigation, clavier, niveaux, citations cliquables,
 
 ---
 
-## Brouillons d'issues GitHub
+## Issues GitHub
 
-Étiquettes communes : `bug`, `T1`. À publier sur `multi-agent-tutor/Multi-Agent-Tutor-DL`.
+Publiées le 2026-11-27 : [#25 à #37](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues?q=is%3Aissue+%5BT1%5D). Texte ci-dessous.
 
-### Issue 1 — [T1] `POST /upload` ignore le fichier et renvoie toujours le cours d'exemple
+### Issue 1 ([#37](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/37)) — [T1] `POST /upload` ignore le fichier et renvoie toujours le cours d'exemple
 
 - **Gravité** : bloquant · **Étiquettes** : `bug`, `T1`, `api` · **Assigné** : Ali
 - **Section** : 1. Upload et ingestion · **Cours** : `maths_matrices_scan_uiowa_en.pdf`
@@ -96,7 +96,7 @@ d'un vrai cours fonctionne : navigation, clavier, niveaux, citations cliquables,
 `ingestion.ingest(...)` pour H1 → H2 → H3, ou `--texte-brut` pour aller vite), ajouter le cours à
 `COURS`, puis indexer avec `rag.index`. L'ingestion est longue (VLM) : la lancer en tâche de fond.
 
-### Issue 2 — [T1] Les cours ingérés sont introuvables : `GET /course/{id}` → 404
+### Issue 2 ([#36](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/36)) — [T1] Les cours ingérés sont introuvables : `GET /course/{id}` → 404
 
 - **Gravité** : bloquant · **Étiquettes** : `bug`, `T1`, `api` · **Assigné** : Ali
 - **Section** : 2. Navigation · **Cours** : `dl_self_attention_ntu_en` (présent dans `data/processed/`)
@@ -116,7 +116,7 @@ routes ne voient pas les mêmes cours.
 **Piste** : faire passer `_cours()` par le même chargement (`ingestion.charger_course(course_id)`), et
 ajouter une route `GET /courses` qui liste les cours de `data/processed` pour le frontend.
 
-### Issue 3 — [T1] Indicateur d'attente jamais visible : panneau Explication vide pendant 1 à 4 min
+### Issue 3 ([#35](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/35)) — [T1] Indicateur d'attente jamais visible : panneau Explication vide pendant 1 à 4 min
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `frontend` · **Assigné** : Ali
 - **Section** : 3. Explication · **Cours** : `ml_regression_lineaire_fr`
@@ -136,7 +136,7 @@ ajouter une route `GET /courses` qui liste les cours de `data/processed` pour le
 `"attente"`) disparaît.
 **Piste** : n'appeler `surTexte` que si `texte` a changé, ou rester en `"attente"` tant que le texte est vide.
 
-### Issue 4 — [T1] Formules LaTeX et gras Markdown affichés bruts dans l'explication
+### Issue 4 ([#34](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/34)) — [T1] Formules LaTeX et gras Markdown affichés bruts dans l'explication
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `agents`, `frontend` · **Assignés** : Ons (O2), Ali (A5)
 - **Section** : 3. Explication · **Cours** : `ml_regression_lineaire_fr`, slide 1, niveau intermédiaire
@@ -151,7 +151,7 @@ délimitent bien), et `TexteRiche` ne rend que les formules délimitées ; il ne
 **Piste** : Ons, exiger `$…$` dans le prompt de l'Explainer (ou envelopper les formules en post-traitement) ;
 Ali, rendre `**…**` dans `TexteRiche` (ou retirer les astérisques avant `structurer`).
 
-### Issue 5 — [T1] Quiz toujours vide : le Critic rejette tous les QCM
+### Issue 5 ([#33](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/33)) — [T1] Quiz toujours vide : le Critic rejette tous les QCM
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `agents` · **Assignés** : Ons (O3), Ali (A2)
 - **Section** : 5. Quiz · **Cours** : `ml_regression_lineaire_fr`, slide 2
@@ -174,7 +174,7 @@ doute son jugement (`\f` de `\frac` et `\b` de `\beta` sont touchés de la même
 **Piste** : vérifier l'échappement des `\` dans les QCM envoyés à `verifier_qcm`, et le critère de rejet
 (rejeter seulement si le verdict est négatif).
 
-### Issue 6 — [T1] `/quiz` et `/flashcards` → 500 si une dépendance du RAG manque
+### Issue 6 ([#32](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/32)) — [T1] `/quiz` et `/flashcards` → 500 si une dépendance du RAG manque
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `agents`, `api` · **Assigné** : Ali
 - **Section** : 5. Quiz / 9. Robustesse
@@ -191,27 +191,27 @@ de `recherche()` (ligne 157) : une erreur d'import d'une dépendance du RAG n'es
 **Piste** : déplacer l'import dans le `try`, ou rattraper `ImportError` dans `_recherche_rag()` ; côté
 frontend, distinguer « API injoignable » d'une erreur 5xx.
 
-### Issue 7 — [T1] `GET /resources` → 404 sur les slides des cours ingérés
+### Issue 7 ([#31](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/31)) — [T1] `GET /resources` → 404 sur les slides des cours ingérés
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `api` · **Assigné** : Ali
 - **Étapes** : `GET /resources?slide_id=dl_self_attention_ntu_en__s013`
 - **Obtenu** : `404 Cours inconnu : dl_self_attention_ntu_en`. **Cause** : même origine que l'issue 2.
 
-### Issue 8 — [T1] Un PDF vide ou corrompu est accepté (HTTP 200)
+### Issue 8 ([#30](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/30)) — [T1] Un PDF vide ou corrompu est accepté (HTTP 200)
 
 - **Gravité** : majeur · **Étiquettes** : `bug`, `T1`, `api` · **Assigné** : Ali
 - **Étapes** : `POST /upload` avec un `.pdf` de 0 octet, puis avec 2 Ko d'octets aléatoires nommés `.pdf`.
 - **Attendu** : 400 « fichier vide ou illisible ». **Obtenu** : 200 et le cours d'exemple.
 - **Piste** : avec l'issue 1, rattraper les erreurs de `parse_course` (`ValueError`, erreurs PyMuPDF) en 400.
 
-### Issue 9 — [T1] Citation fausse dans l'explication de la slide 1
+### Issue 9 ([#29](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/29)) — [T1] Citation fausse dans l'explication de la slide 1
 
 - **Gravité** : mineur · **Étiquettes** : `bug`, `T1`, `agents` · **Assignée** : Ons (O2)
 - **Obtenu** : l'explication de la slide 1 donne la formule `J(\theta)`, qui est sur la **slide 2**, et la cite
   `[Slide 1]`. Observé avec `API_CRITIC=off` : à revérifier avec le Critic actif.
 - **Capture** : [`02_explication_intermediaire.png`](captures_t1/02_explication_intermediaire.png)
 
-### Issue 10 — [T1] Le repli « Q&A non disponible » s'affiche comme une réponse sourcée
+### Issue 10 ([#28](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/28)) — [T1] Le repli « Q&A non disponible » s'affiche comme une réponse sourcée
 
 - **Gravité** : mineur · **Étiquettes** : `bug`, `T1`, `frontend`, `agents` · **Assignés** : Ali, Both
 - **Obtenu** : « Le Q&A n'est pas disponible : modèles RAG non installés ou cours non indexé. » avec une
@@ -219,13 +219,13 @@ frontend, distinguer « API injoignable » d'une erreur 5xx.
 - **Attendu** : bulle d'erreur ou de refus (pointillés), sans source.
 - **Capture** : [`06_chat_qa.png`](captures_t1/06_chat_qa.png)
 
-### Issue 11 — [T1] `GET /resources` met 17 s
+### Issue 11 ([#27](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/27)) — [T1] `GET /resources` met 17 s
 
 - **Gravité** : mineur · **Étiquettes** : `T1`, `agents`, `performance` · **Assigné** : Ali
 - **Obtenu** : 16,8 s pour `slide_id=ml_regression_lineaire_fr__s002`, alors que les ressources viennent du
   catalogue local `data/ressources/catalogue.json`. Probablement l'appel LLM de filtrage : à mettre en cache.
 
-### Issue 12 — [T1] Explications regénérées à chaque rechargement, qui s'empilent dans la file du LLM
+### Issue 12 ([#26](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/26)) — [T1] Explications regénérées à chaque rechargement, qui s'empilent dans la file du LLM
 
 - **Gravité** : mineur · **Étiquettes** : `T1`, `frontend`, `performance` · **Assigné** : Ali
 - **Obtenu** : le cache des explications est en mémoire (`useRef`) : chaque rechargement relance
@@ -233,7 +233,7 @@ frontend, distinguer « API injoignable » d'une erreur 5xx.
   et une génération abandonnée continue côté serveur : les attentes s'additionnent.
 - **Piste** : garder le cache dans `sessionStorage`, et/ou un cache côté API (slide × niveau × langue).
 
-### Issue 13 — [T1] Bundle JS de 529 Ko
+### Issue 13 ([#25](https://github.com/multi-agent-tutor/Multi-Agent-Tutor-DL/issues/25)) — [T1] Bundle JS de 529 Ko
 
 - **Gravité** : mineur · **Étiquettes** : `T1`, `frontend` · **Assigné** : Ali
 - **Obtenu** : `npm run build` avertit « Some chunks are larger than 500 kB ». **Piste** : charger KaTeX et
